@@ -2,6 +2,24 @@
 .gradle/
 build/
 
+# VSCode files
+
+.vs/
+
+
+# Vendor
+
+vendor/
+
+# Res
+
+res/
+
+gradle/
+
+gradlew*
+
+
 # Local configuration file (sdk path, etc)
 local.properties
 
