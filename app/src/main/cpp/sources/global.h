@@ -12,6 +12,8 @@
 #include "EGL/egl.h"
 #include "android/asset_manager.h"
 #include "../vendor/glm/glm/glm.hpp"
+#include "SDL.h"
+#include <sstream>
 
 using namespace std;
 
@@ -22,14 +24,7 @@ static void ClearGLErrors() {
     }
 }
 
-static bool GetGLError(int line, std::string file) {
-    GLenum code = glGetError();
-    if (code != GL_NO_ERROR) {
-        std::cout << "OpenGL error '" << std::to_string(code) << "' \nAt line: " << line << " \nIn file: " << file << endl;
-        return true;
-    }
-    return false;
-}
+bool GetGLError(int line, std::string file);
 
 #ifdef NDEBUG
 #define GL_CALL(x) x

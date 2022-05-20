@@ -141,6 +141,8 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/sources/helpers/helpers.cpp
 
+	${PROJECT_SOURCE_DIR}/sources/global.cpp
+
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp

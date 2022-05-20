@@ -24,7 +24,7 @@ private:
 
 
 
-    static inline std::string m_GLSLVersion = "version 100";
+    static inline std::string m_GLSLVersion = "#version 300 es";
     static inline SDL_DisplayMode m_DisplayProperties;
     static inline ImGuiIO* m_IO = nullptr;
     static inline SDL_Window* m_WindowPointer = nullptr;

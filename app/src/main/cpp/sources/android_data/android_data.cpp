@@ -61,6 +61,7 @@ bool AndroidData::InitializeContext() {
 
 bool AndroidData::InitializeWindow() {
 
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
@@ -68,7 +69,7 @@ bool AndroidData::InitializeWindow() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
-
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     SDL_GetCurrentDisplayMode(0,&m_DisplayProperties);
 
@@ -80,7 +81,7 @@ bool AndroidData::InitializeWindow() {
             SDL_WINDOWPOS_CENTERED,
             m_DisplayProperties.w,
             m_DisplayProperties.h,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_MAXIMIZED
+            SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI
     );
 
     // Check that the window was successfully created
@@ -101,12 +102,11 @@ bool AndroidData::InitializeImGui() {
 
     IMGUI_CHECKVERSION();
 
-    if(!ImGui::CreateContext()){
-        return false;
-    }
+    ImGui::CreateContext();
+
     m_IO = &ImGui::GetIO();
 
-    ImGui::StyleColorsDark();
+    //ImGui::StyleColorsDark();
 
     ImGui_ImplSDL2_InitForOpenGL(m_WindowPointer,m_Context);
     ImGui_ImplOpenGL3_Init(m_GLSLVersion.c_str());
