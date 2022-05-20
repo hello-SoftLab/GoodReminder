@@ -40,6 +40,8 @@ project("app_project")
 
 add_subdirectory(vendor/sdl_repo)
 
+add_subdirectory(vendor/fmt)
+
 
 # --------------------- Repository declarations ------------------------
 
@@ -56,7 +58,7 @@ add_subdirectory(vendor/sdl_repo)
 
 			GIT_REPOSITORY https://github.com/ocornut/imgui
 
-			GIT_TAG origin/docking
+			GIT_TAG origin/master
 
 			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
 
@@ -128,6 +130,27 @@ add_subdirectory(vendor/sdl_repo)
 	endif()
 
 
+#repository download and settings for alias fmt...
+
+
+	dir_exists(fmt_exists ${PROJECT_SOURCE_DIR}/vendor/fmt)
+
+
+	if(NOT ${fmt_exists})
+
+		FetchContent_Declare(fmt
+
+			GIT_REPOSITORY https://github.com/fmtlib/fmt
+
+			GIT_TAG 8.1.1
+
+			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/fmt
+
+		)
+		FetchContent_MakeAvailable(fmt)
+	endif()
+
+
 #creating library
 add_library(goodreminder SHARED
 
@@ -142,6 +165,10 @@ add_library(goodreminder SHARED
 	${PROJECT_SOURCE_DIR}/sources/helpers/helpers.cpp
 
 	${PROJECT_SOURCE_DIR}/sources/global.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/good_reminder/app_layout.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/good_reminder/data_structures.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
@@ -171,6 +198,7 @@ target_link_libraries(goodreminder PUBLIC GLESv3)
 target_link_libraries(goodreminder PUBLIC android)
 target_link_libraries(goodreminder PUBLIC log)
 target_link_libraries(goodreminder PUBLIC SDL2)
+target_link_libraries(goodreminder PUBLIC fmt::fmt)
 
 
 #adding includes...
@@ -187,3 +215,5 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm/)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/sdl_repo/include)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/fmt/include)

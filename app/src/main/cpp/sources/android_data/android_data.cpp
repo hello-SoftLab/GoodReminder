@@ -91,6 +91,8 @@ bool AndroidData::InitializeWindow() {
         return false;
     }
 
+    SDL_SetEventFilter(&AndroidData::EventFilter,nullptr);
+
     return true;
 }
 
@@ -106,14 +108,53 @@ bool AndroidData::InitializeImGui() {
 
     m_IO = &ImGui::GetIO();
 
-    //ImGui::StyleColorsDark();
+    ImGui::StyleColorsLight();
 
     ImGui_ImplSDL2_InitForOpenGL(m_WindowPointer,m_Context);
     ImGui_ImplOpenGL3_Init(m_GLSLVersion.c_str());
+
+
 
     return true;
 }
 
 SDL_Window *AndroidData::CurrentWindow() {
     return m_WindowPointer;
+}
+
+HelperClasses::FunctionSink<void()> AndroidData::onDestroy() {
+    return {m_Terminating};
+}
+
+HelperClasses::FunctionSink<void()> AndroidData::onLowMemory() {
+    return {m_LowMemoryEvent};
+}
+
+HelperClasses::FunctionSink<void()> AndroidData::onPause() {
+    return {m_DidEnterBgEvent};
+}
+
+HelperClasses::FunctionSink<void()> AndroidData::onResume() {
+    return {m_DidEnterFgEvent};
+}
+
+int AndroidData::EventFilter(void *userData, SDL_Event *event) {
+
+    switch(event->type){
+        case SDL_APP_TERMINATING:
+            m_Terminating.EmitEvent();
+            break;
+        case SDL_APP_LOWMEMORY:
+            m_LowMemoryEvent.EmitEvent();
+            break;
+        case SDL_APP_WILLENTERBACKGROUND:
+            m_DidEnterBgEvent.EmitEvent();
+            break;
+        case SDL_APP_WILLENTERFOREGROUND:
+            m_DidEnterFgEvent.EmitEvent();
+            break;
+    }
+
+
+    return 1;
 }

@@ -22,33 +22,31 @@ void AppManager::BeginFrame() {
         SDL_StopTextInput();
     }
 
-
-    //ImGui::ShowDemoWindow();
-
 }
 
 void AppManager::Draw() {
-    static std::string data = "";
-    static bool isTextShown = false;
+
     ImGui::SetNextWindowPos(ImVec2(0,0));
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x,ImGui::GetIO().DisplaySize.y));
     if(ImGui::Begin("Hello!",0,ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoTitleBar)){
+        ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding,10);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding,10);
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,10);
 
-        ImGui::SetCursorPosX(ImGui::GetIO().DisplaySize.x/6);
-        //ImGui::SetNextItemWidth(ImGui::GetIO().DisplaySize.x/3);
-        if(ImGui::InputTextMultiline("##data",&data,ImVec2(4*AndroidData::IO().DisplaySize.x/6,AndroidData::IO().DisplaySize.y/3))){
+        m_DrawingFunctions.EmitEvent();
 
-        }
+        ImGui::PopStyleVar(3);
 
 
-
-        ImGui::SetWindowFontScale(2);
+        ImGui::ScrollWhenDraggingOnVoid(ImVec2(0.0f,-AndroidData::IO().MouseDelta.y),ImGuiMouseButton_Left);
     }
 
     ImGui::End();
 }
 
 void AppManager::EndFrame() {
+    //ImGui::ShowDemoWindow();
+
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui::Render();
@@ -84,4 +82,23 @@ bool AppManager::HandleFrameUpdate() {
 
     return true;
 
+}
+
+HelperClasses::FunctionSink<void()> AppManager::Drawing() {
+    return {m_DrawingFunctions};
+}
+
+void ImGui::ScrollWhenDraggingOnVoid(const ImVec2 &delta, ImGuiMouseButton mouse_button) {
+
+    ImGuiContext& g = *ImGui::GetCurrentContext();
+    ImGuiWindow* window = g.CurrentWindow;
+    bool hovered = false;
+    bool held = false;
+    ImGuiButtonFlags button_flags = (mouse_button == 0) ? ImGuiButtonFlags_MouseButtonLeft : (mouse_button == 1) ? ImGuiButtonFlags_MouseButtonRight : ImGuiButtonFlags_MouseButtonMiddle;
+    if (g.HoveredId == 0) // If nothing hovered so far in the frame (not same as IsAnyItemHovered()!)
+        ImGui::ButtonBehavior(window->Rect(), window->GetID("##scrolldraggingoverlay"), &hovered, &held, button_flags);
+    if (held && delta.x != 0.0f)
+        ImGui::SetScrollX(window, window->Scroll.x + delta.x);
+    if (held && delta.y != 0.0f)
+        ImGui::SetScrollY(window, window->Scroll.y + delta.y);
 }
