@@ -1,254 +1,119 @@
 #include "android_data.h"
 #include "../app_manager/app_manager.h"
 
-android_app *AndroidData::App() {
-    return g_App;
-}
-
-void AndroidData::Init(struct android_app *data) {
-
-
-    //initializing
-    ANativeWindow_acquire(g_App->window);
-    {
-        g_EglDisplay = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-        if (g_EglDisplay == EGL_NO_DISPLAY)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglGetDisplay(EGL_DEFAULT_DISPLAY) returned EGL_NO_DISPLAY");
-
-        if (eglInitialize(g_EglDisplay, 0, 0) != EGL_TRUE)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglInitialize() returned with an error");
-
-        const EGLint egl_attributes[] = { EGL_BLUE_SIZE, 8, EGL_GREEN_SIZE, 8, EGL_RED_SIZE, 8, EGL_DEPTH_SIZE, 24, EGL_SURFACE_TYPE, EGL_WINDOW_BIT, EGL_NONE };
-        EGLint num_configs = 0;
-        if (eglChooseConfig(g_EglDisplay, egl_attributes, nullptr, 0, &num_configs) != EGL_TRUE)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglChooseConfig() returned with an error");
-        if (num_configs == 0)
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s", "eglChooseConfig() returned 0 matching config");
-
-        // Get the first matching config
-        EGLConfig egl_config;
-        eglChooseConfig(g_EglDisplay, egl_attributes, &egl_config, 1, &num_configs);
-        EGLint egl_format;
-        eglGetConfigAttrib(g_EglDisplay, egl_config, EGL_NATIVE_VISUAL_ID, &egl_format);
-        ANativeWindow_setBuffersGeometry(g_App->window, 0, 0, egl_format);
-
-        const EGLint egl_context_attributes[] = { EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE };
-        g_EglContext = eglCreateContext(g_EglDisplay, egl_config, EGL_NO_CONTEXT, egl_context_attributes);
-
-        if (g_EglContext == EGL_NO_CONTEXT) {
-            __android_log_print(ANDROID_LOG_ERROR, g_LogTag, "%s",
-                                "eglCreateContext() returned EGL_NO_CONTEXT");
-            ShutDown();
-        }
-
-        g_EglSurface = eglCreateWindowSurface(g_EglDisplay, egl_config, g_App->window, nullptr);
-        eglMakeCurrent(g_EglDisplay, g_EglSurface, g_EglSurface, g_EglContext);
-    }
-
-    // Setup Dear ImGui context
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-
-    m_IO = &io;
-    // Disable loading/saving of .ini file from disk.
-    // FIXME: Consider using LoadIniSettingsFromMemory() / SaveIniSettingsToMemory() to save in appropriate location for Android.
-    io.IniFilename = nullptr;
-
-    // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsClassic();
-
-    // Setup Platform/Renderer backends
-    ImGui_ImplAndroid_Init(g_App->window);
-    ImGui_ImplOpenGL3_Init("#version 300 es");
-
-
-
-
-    g_Initialized = true;
-}
-
-void AndroidData::HandleAppCommands(struct android_app *app, int32_t appCmd) {
-    switch (appCmd)
-    {
-        case APP_CMD_SAVE_STATE:
-            break;
-        case APP_CMD_INIT_WINDOW:
-            Init(app);
-            break;
-        case APP_CMD_TERM_WINDOW:
-            ShutDown();
-            break;
-        case APP_CMD_GAINED_FOCUS:
-            break;
-        case APP_CMD_LOST_FOCUS:
-            break;
-    }
-}
-
-int32_t AndroidData::HandleInputEvent(struct android_app *app,AInputEvent* inputEvent) {
-    return ImGui_ImplAndroid_HandleInputEvent(inputEvent);
-}
-
-void AndroidData::MainLoop(struct android_app* app) {
-    if(!g_App) {
-        g_App = app;
-    }
-    g_App->onAppCmd = HandleAppCommands;
-    g_App->onInputEvent = HandleInputEvent;
-
-    while (true) {
-        int out_events;
-        struct android_poll_source *out_data;
-
-        // Poll all events. If the app is not visible, this loop blocks until g_Initialized == true.
-        while (ALooper_pollAll(g_Initialized ? 0 : -1, nullptr, &out_events, (void **) &out_data) >=
-               0) {
-            // Process one event
-            if (out_data != nullptr)
-                out_data->process(g_App, out_data);
-
-            // Exit the app by returning from within the infinite loop
-            if (g_App->destroyRequested != 0) {
-                // shutdown() should have been called already while processing the
-                // app command APP_CMD_TERM_WINDOW. But we play save here
-                if (!g_Initialized)
-                    ShutDown();
-
-                return;
-            }
-        }
-
-        AppManager::HandleFrameUpdate();
-        m_IsKeyboardOpen = IsSoftKeyboardOpenCommand();
-
-    }
-}
-
-
-void AndroidData::ShutDown() {
-    if (!g_Initialized)
+void AndroidData::Init() {
+    if(SDL_Init(SDL_INIT_VIDEO) != 0){
         return;
+    }
 
-    // Cleanup
+    if(!InitializeWindow()){
+        return;
+    }
+
+    if(!InitializeContext()){
+        return;
+    }
+
+    if(!InitializeImGui()){
+        return;
+    }
+
+
+
+    while(AppManager::HandleFrameUpdate()){
+
+    }
+
     ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplAndroid_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
     ImGui::DestroyContext();
 
-    if (g_EglDisplay != EGL_NO_DISPLAY)
-    {
-        eglMakeCurrent(g_EglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    SDL_GL_DeleteContext(m_Context);
+    // Close and destroy the window
+    SDL_DestroyWindow(m_WindowPointer);
 
-        if (g_EglContext != EGL_NO_CONTEXT)
-            eglDestroyContext(g_EglDisplay, g_EglContext);
-
-        if (g_EglSurface != EGL_NO_SURFACE)
-            eglDestroySurface(g_EglDisplay, g_EglSurface);
-
-        eglTerminate(g_EglDisplay);
-    }
-
-    g_EglDisplay = EGL_NO_DISPLAY;
-    g_EglContext = EGL_NO_CONTEXT;
-    g_EglSurface = EGL_NO_SURFACE;
-    ANativeWindow_release(g_App->window);
-
-    g_Initialized = false;
-}
+    // Clean up
+    SDL_Quit();
 
 
-
-
-
-JNIEnv *AndroidData::Env() {
-    return g_App->activity->env;
-}
-
-JavaVM *AndroidData::VM() {
-    return g_App->activity->vm;
 }
 
 ImGuiIO &AndroidData::IO() {
     return *m_IO;
 }
 
-bool AndroidData::OpenSoftKeyboard() {
+bool AndroidData::InitializeContext() {
 
+    m_Context = SDL_GL_CreateContext(m_WindowPointer);
 
-    JNIEnv* env = AndroidData::Env();
-    JavaVM* java_vm = AndroidData::VM();
-
-    java_vm->AttachCurrentThread(&env, nullptr);
-
-
-    jclass native_activity_clazz = env->GetObjectClass(g_App->activity->clazz);
-
-
-    jmethodID method_id = env->GetMethodID(native_activity_clazz, "showSoftInput", "()V");
-    if(method_id == nullptr){
+    if(m_Context == nullptr){
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,"Error","OpenGL ES3 not supported on device",m_WindowPointer);
         return false;
     }
 
-    env->CallVoidMethod(g_App->activity->clazz, method_id);
+    SDL_GL_MakeCurrent(m_WindowPointer, m_Context);
 
-    java_vm->DetachCurrentThread();
+    // enable VSync
+    SDL_GL_SetSwapInterval(1);
+    
+    return true;
+}
 
+bool AndroidData::InitializeWindow() {
+
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
+
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+
+
+
+    SDL_GetCurrentDisplayMode(0,&m_DisplayProperties);
+
+
+
+    m_WindowPointer = SDL_CreateWindow(
+            "",
+            SDL_WINDOWPOS_CENTERED,
+            SDL_WINDOWPOS_CENTERED,
+            m_DisplayProperties.w,
+            m_DisplayProperties.h,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_MAXIMIZED
+    );
+
+    // Check that the window was successfully created
+    if (m_WindowPointer == NULL) {
+        // In the case that the window could not be made...
+        std::string error = SDL_GetError();
+        return false;
+    }
 
     return true;
 }
 
-bool AndroidData::CloseSoftKeyboard() {
+void AndroidData::ShutDown() {
 
-    JNIEnv* env = AndroidData::Env();
-    JavaVM* java_vm = AndroidData::VM();
+}
 
-    java_vm->AttachCurrentThread(&env, nullptr);
+bool AndroidData::InitializeImGui() {
 
+    IMGUI_CHECKVERSION();
 
-    jclass native_activity_clazz = env->GetObjectClass(g_App->activity->clazz);
-
-
-    jmethodID method_id = env->GetMethodID(native_activity_clazz, "hideSoftInput", "()V");
-    if(method_id == nullptr){
+    if(!ImGui::CreateContext()){
         return false;
     }
+    m_IO = &ImGui::GetIO();
 
-    env->CallVoidMethod(g_App->activity->clazz, method_id);
+    ImGui::StyleColorsDark();
 
-    java_vm->DetachCurrentThread();
-
+    ImGui_ImplSDL2_InitForOpenGL(m_WindowPointer,m_Context);
+    ImGui_ImplOpenGL3_Init(m_GLSLVersion.c_str());
 
     return true;
 }
 
-bool AndroidData::IsSoftKeyboardOpenCommand() {
-    JNIEnv* env = AndroidData::Env();
-    JavaVM* java_vm = AndroidData::VM();
-
-    java_vm->AttachCurrentThread(&env, nullptr);
-
-
-    jclass native_activity_clazz = env->GetObjectClass(g_App->activity->clazz);
-
-
-    jmethodID method_id = env->GetMethodID(native_activity_clazz, "isActive", "()Z");
-    if(method_id == nullptr){
-        java_vm->DetachCurrentThread();
-        return false;
-    }
-
-    jboolean isActive = env->CallBooleanMethod(g_App->activity->clazz, method_id);
-
-    java_vm->DetachCurrentThread();
-    return isActive == JNI_TRUE;
-
-}
-
-bool AndroidData::IsSoftKeyboardOpen() {
-    return m_IsKeyboardOpen;
-}
-
-void AndroidData::SwapBuffers() {
-    eglSwapBuffers(g_EglDisplay, g_EglSurface);
+SDL_Window *AndroidData::CurrentWindow() {
+    return m_WindowPointer;
 }

@@ -3,37 +3,33 @@
 #include <app_manager/app_manager.h>
 
 #include "global.h"
+#include "SDL.h"
 
 class AndroidData {
 public:
-    static struct android_app* App();
-    static void Init(struct android_app* app);
-    static void MainLoop(struct android_app* app);
-    static bool OpenSoftKeyboard();
-    static bool CloseSoftKeyboard();
-    static bool IsSoftKeyboardOpen();
-    static JNIEnv* Env();
-    static JavaVM* VM();
+
+    static void Init();
+
+
     static ImGuiIO& IO();
-    static void SwapBuffers();
+    static SDL_Window* CurrentWindow();
 
 private:
-    static bool IsSoftKeyboardOpenCommand();
+    static bool InitializeImGui();
+    static bool InitializeContext();
+    static bool InitializeWindow();
+
 
     static void ShutDown();
 
 
-    static void HandleAppCommands(struct android_app* app,int32_t appCmd);
-    static int32_t HandleInputEvent(struct android_app* app,AInputEvent* inputEvent);
 
-    static inline bool m_IsKeyboardOpen = false;
-    static inline bool g_Initialized = false;
+    static inline std::string m_GLSLVersion = "version 100";
+    static inline SDL_DisplayMode m_DisplayProperties;
     static inline ImGuiIO* m_IO = nullptr;
-    static inline struct android_app* g_App = nullptr;
-    static inline EGLDisplay g_EglDisplay = EGL_NO_DISPLAY;
-    static inline EGLSurface g_EglSurface = EGL_NO_SURFACE;
-    static inline EGLContext g_EglContext = EGL_NO_CONTEXT;
-    static inline char g_LogTag[] = "ImGuiExample";
+    static inline SDL_Window* m_WindowPointer = nullptr;
+    static inline SDL_GLContext m_Context;
+
 
 
 };

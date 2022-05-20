@@ -1,10 +1,8 @@
 #pragma once
 #include "../vendor/imgui/imgui.h"
-#include "../vendor/imgui/backends/imgui_impl_android.h"
+#include "../vendor/imgui/backends/imgui_impl_sdl.h"
 #include "../vendor/imgui/backends/imgui_impl_opengl3.h"
 #include "../vendor/imgui/misc/cpp/imgui_stdlib.h"
-#include "android_native_app_glue.h"
-#include "../vendor/fmt/include/fmt/format.h"
 #include "../vendor/entt/single_include/entt/entt.hpp"
 #include "android/log.h"
 #include <jni.h>
@@ -13,8 +11,10 @@
 #include "GLES3/gl3.h"
 #include "EGL/egl.h"
 #include "android/asset_manager.h"
+#include "../vendor/glm/glm/glm.hpp"
 
 using namespace std;
+
 
 static void ClearGLErrors() {
     while (glGetError() != GL_NO_ERROR) {

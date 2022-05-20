@@ -1,19 +1,29 @@
 #include "app_manager.h"
 #include "../android_data/android_data.h"
+#include "../helpers/color.h"
 
-void AppManager::HandleFrameUpdate() {
-    BeginFrame();
-    Draw();
-    EndFrame();
-}
+
 
 void AppManager::BeginFrame() {
 
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplAndroid_NewFrame();
+    ImGui_ImplSDL2_NewFrame();
     ImGui::NewFrame();
 
+    glClearColor(0,0,0,0);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+
+    if(AndroidData::IO().WantCaptureKeyboard){
+        SDL_StartTextInput();
+    }
+    else {
+        SDL_StopTextInput();
+    }
+
+
+    ImGui::ShowDemoWindow();
 
 }
 
@@ -27,14 +37,6 @@ void AppManager::Draw() {
 
         if(ImGui::InputTextMultiline("##data",&data,ImVec2(AndroidData::IO().DisplaySize.x,AndroidData::IO().DisplaySize.y/3))){
 
-        }
-        if(ImGui::IsItemActive() && !isTextShown){
-            AndroidData::OpenSoftKeyboard();
-            isTextShown = true;
-        }
-        if(!ImGui::IsItemActive() && isTextShown){
-            AndroidData::CloseSoftKeyboard();
-            isTextShown = false;
         }
 
 
@@ -50,8 +52,33 @@ void AppManager::EndFrame() {
 
     ImGui::Render();
     glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClearColor(0,0,0,1);
-    glClear(GL_COLOR_BUFFER_BIT);
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    AndroidData::SwapBuffers();
+    SDL_GL_SwapWindow(AndroidData::CurrentWindow());
+}
+
+bool AppManager::HandleFrameUpdate() {
+    SDL_Event event;
+
+
+    while(SDL_PollEvent(&event)){
+        ImGui_ImplSDL2_ProcessEvent(&event);
+        switch(event.type){
+            case SDL_QUIT:
+                return false;
+            case SDL_WINDOWEVENT:
+                if(event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(AndroidData::CurrentWindow())){
+                    return false;
+                }
+                break;
+        }
+    }
+
+    BeginFrame();
+
+    Draw();
+
+    EndFrame();
+
+    return true;
+
 }

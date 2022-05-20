@@ -36,6 +36,11 @@ include(FetchContent)
 #project name
 project("app_project")
 
+#adding subdirectories...
+
+add_subdirectory(vendor/sdl_repo)
+
+
 # --------------------- Repository declarations ------------------------
 
 
@@ -60,30 +65,6 @@ project("app_project")
 	endif()
 
 
-#repository download and settings for alias fmt...
-
-
-	dir_exists(fmt_exists ${PROJECT_SOURCE_DIR}/vendor/fmt)
-
-
-	if(NOT ${fmt_exists})
-
-		ExternalProject_Add(fmt
-
-			GIT_REPOSITORY https://github.com/fmtlib/fmt
-
-			GIT_TAG 8.1.1
-
-			CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=${PROJECT_SOURCE_DIR}/vendor/fmt
-					   -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-
-		BUILD_BYPRODUCTS ${PROJECT_SOURCE_DIR}/vendor/fmt/lib/${CMAKE_STATIC_LIBRARY_PREFIX}fmt$<$<CONFIG:Debug>:d>${CMAKE_STATIC_LIBRARY_SUFFIX}
-
-		)
-
-	endif()
-
-
 #repository download and settings for alias entt...
 
 
@@ -105,15 +86,60 @@ project("app_project")
 	endif()
 
 
+#repository download and settings for alias glm...
+
+
+	dir_exists(glm_exists ${PROJECT_SOURCE_DIR}/vendor/glm)
+
+
+	if(NOT ${glm_exists})
+
+		FetchContent_Declare(glm
+
+			GIT_REPOSITORY https://github.com/g-truc/glm
+
+			GIT_TAG 0.9.9.8
+
+			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/glm
+
+		)
+		FetchContent_MakeAvailable(glm)
+	endif()
+
+
+#repository download and settings for alias sdl_repo...
+
+
+	dir_exists(sdl_repo_exists ${PROJECT_SOURCE_DIR}/vendor/sdl_repo)
+
+
+	if(NOT ${sdl_repo_exists})
+
+		FetchContent_Declare(sdl_repo
+
+			GIT_REPOSITORY https://github.com/libsdl-org/SDL
+
+			GIT_TAG release-2.0.22
+
+			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/sdl_repo
+
+		)
+		FetchContent_MakeAvailable(sdl_repo)
+	endif()
+
+
 #creating library
 add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/main.cpp
 
-	${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 	${PROJECT_SOURCE_DIR}/sources/android_data/android_data.cpp
 
 	${PROJECT_SOURCE_DIR}/sources/app_manager/app_manager.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/helpers/color.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/helpers/helpers.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
@@ -127,7 +153,7 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/backends/imgui_impl_opengl3.cpp
 
-	${PROJECT_SOURCE_DIR}/vendor/imgui/backends/imgui_impl_android.cpp
+	${PROJECT_SOURCE_DIR}/vendor/imgui/backends/imgui_impl_sdl.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/misc/cpp/imgui_stdlib.cpp
 
@@ -136,33 +162,13 @@ add_library(goodreminder SHARED
 set_property(TARGET goodreminder PROPERTY CXX_STANDARD 17)
 
 
-#setting dependencies...
-
-
-if(NOT ${fmt_exists})
-	add_dependencies(goodreminder fmt)
-endif()
-
 #adding libraries...
 
 target_link_libraries(goodreminder PUBLIC EGL)
 target_link_libraries(goodreminder PUBLIC GLESv3)
 target_link_libraries(goodreminder PUBLIC android)
 target_link_libraries(goodreminder PUBLIC log)
-
-add_library(fmt_target STATIC IMPORTED)
-
-
-if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-	set_target_properties(fmt_target PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/vendor/fmt/lib/${CMAKE_STATIC_LIBRARY_PREFIX}fmtd${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-	target_link_libraries(goodreminder PUBLIC fmt_target)
-else()
-
-	set_target_properties(fmt_target PROPERTIES IMPORTED_LOCATION ${PROJECT_SOURCE_DIR}/vendor/fmt/lib/${CMAKE_STATIC_LIBRARY_PREFIX}fmt${CMAKE_STATIC_LIBRARY_SUFFIX})
-
-	target_link_libraries(goodreminder PUBLIC fmt_target)
-endif()
+target_link_libraries(goodreminder PUBLIC SDL2)
 
 
 #adding includes...
@@ -172,10 +178,10 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/sources)
 
-target_include_directories(goodreminder PUBLIC ${ANDROID_NDK}/sources/android/native_app_glue/)
-
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui/)
 
-target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/fmt/include)
-
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt/single_include)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm/)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/sdl_repo/include)
