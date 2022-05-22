@@ -3,10 +3,14 @@
 #include "SDL.h"
 #include "good_reminder/app_layout.h"
 
+static bool firstLoop = true;
 
 int SDL_main(int /*argc*/, char* /*argv*/[]) {
 
-    AppLayout::Init();
+    if(firstLoop) {
+        AppLayout::Init();
+        firstLoop = false;
+    }
 
     AndroidData::Init();
     return 0;

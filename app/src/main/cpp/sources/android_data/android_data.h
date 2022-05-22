@@ -14,6 +14,12 @@ public:
     static HelperClasses::FunctionSink<void()> onLowMemory();
     static HelperClasses::FunctionSink<void()> onPause();
     static HelperClasses::FunctionSink<void()> onResume();
+    static HelperClasses::FunctionSink<void(int,int)> onResize();
+    static HelperClasses::FunctionSink<void(SDL_Event*)> onFingerDown();
+    static HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
+
+    static float GetKeyboardHeight();
+    static ImVec2 GetMonitorSize();
 
     static ImGuiIO& IO();
     static SDL_Window* CurrentWindow();
@@ -29,6 +35,10 @@ private:
     static void ShutDown();
 
 
+
+    static inline HelperClasses::EventLauncher<void(SDL_Event*)> m_FingerDownEvent;
+    static inline HelperClasses::EventLauncher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
+    static inline HelperClasses::EventLauncher<void(int,int)> m_ResizeEvent;
     static inline HelperClasses::EventLauncher<void()> m_Terminating;
     static inline HelperClasses::EventLauncher<void()> m_LowMemoryEvent;
     static inline HelperClasses::EventLauncher<void()> m_DidEnterBgEvent;

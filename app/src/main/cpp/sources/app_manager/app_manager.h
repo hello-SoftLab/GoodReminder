@@ -12,6 +12,7 @@ private:
 
     static inline HelperClasses::EventLauncher<void()> m_DrawingFunctions;
 
+
     static bool HandleFrameUpdate();
     static void BeginFrame();
     static void Draw();

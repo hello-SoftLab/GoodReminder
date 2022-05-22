@@ -1,6 +1,7 @@
 #include "android_data.h"
 #include "../app_manager/app_manager.h"
 
+
 void AndroidData::Init() {
     if(SDL_Init(SDL_INIT_VIDEO) != 0){
         return;
@@ -138,6 +139,16 @@ HelperClasses::FunctionSink<void()> AndroidData::onResume() {
     return {m_DidEnterFgEvent};
 }
 
+HelperClasses::FunctionSink<void(int,int)> AndroidData::onResize() {
+    return {m_ResizeEvent};
+}
+HelperClasses::FunctionSink<void(SDL_Event*)> AndroidData::onFingerDown() {
+    return {m_FingerDownEvent};
+}
+HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> AndroidData::onMultiGesture() {
+    return {m_MultiGestureEvent};
+}
+
 int AndroidData::EventFilter(void *userData, SDL_Event *event) {
 
     switch(event->type){
@@ -153,8 +164,49 @@ int AndroidData::EventFilter(void *userData, SDL_Event *event) {
         case SDL_APP_WILLENTERFOREGROUND:
             m_DidEnterFgEvent.EmitEvent();
             break;
+        case SDL_WINDOWEVENT:
+            if(event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED){
+                m_ResizeEvent.EmitEvent(event->window.data1,event->window.data2);
+            }
+            break;
+        case SDL_MULTIGESTURE:
+            m_MultiGestureEvent.EmitEvent(event->mgesture);
+            break;
     }
 
 
     return 1;
 }
+
+float AndroidData::GetKeyboardHeight() {
+    JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+
+    // retrieve the Java instance of the SDLActivity
+    jobject activity = (jobject)SDL_AndroidGetActivity();
+
+    // find the Java class of the activity. It should be SDLActivity or a subclass of it.
+    jclass clazz(env->GetObjectClass(activity));
+
+    // find the identifier of the method to call
+    jmethodID method_id = env->GetMethodID(clazz, "getKeyboardScreenHeight", "()F");
+
+    // effectively call the Java method
+    jfloat height = env->CallFloatMethod(activity, method_id);
+
+    env->DeleteLocalRef(activity);
+    env->DeleteLocalRef(clazz);
+
+
+
+
+    return height;
+
+
+
+}
+
+ImVec2 AndroidData::GetMonitorSize() {
+
+    return {static_cast<float>(m_DisplayProperties.w),static_cast<float>(m_DisplayProperties.h)};
+}
+

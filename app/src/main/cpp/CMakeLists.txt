@@ -33,15 +33,9 @@ include(GNUInstallDirs)
 include(ExternalProject)
 include(FetchContent)
 
+
 #project name
 project("app_project")
-
-#adding subdirectories...
-
-add_subdirectory(vendor/sdl_repo)
-
-add_subdirectory(vendor/fmt)
-
 
 # --------------------- Repository declarations ------------------------
 
@@ -49,107 +43,109 @@ add_subdirectory(vendor/fmt)
 #repository download and settings for alias imgui...
 
 
-	dir_exists(imgui_exists ${PROJECT_SOURCE_DIR}/vendor/imgui)
+	FetchContent_Declare(imgui_project
 
+		GIT_REPOSITORY https://github.com/ocornut/imgui
 
-	if(NOT ${imgui_exists})
+		GIT_TAG origin/master
 
-		FetchContent_Declare(imgui
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
 
-			GIT_REPOSITORY https://github.com/ocornut/imgui
+	)
 
-			GIT_TAG origin/master
-
-			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui
-
-		)
-		FetchContent_MakeAvailable(imgui)
-	endif()
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES imgui_project)
 
 
 #repository download and settings for alias entt...
 
 
-	dir_exists(entt_exists ${PROJECT_SOURCE_DIR}/vendor/entt)
+	FetchContent_Declare(entt_project
 
+		GIT_REPOSITORY https://github.com/skypjack/entt
 
-	if(NOT ${entt_exists})
+		GIT_TAG origin/master
 
-		FetchContent_Declare(entt
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/entt
 
-			GIT_REPOSITORY https://github.com/skypjack/entt
+	)
 
-			GIT_TAG origin/master
-
-			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/entt
-
-		)
-		FetchContent_MakeAvailable(entt)
-	endif()
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES entt_project)
 
 
 #repository download and settings for alias glm...
 
 
-	dir_exists(glm_exists ${PROJECT_SOURCE_DIR}/vendor/glm)
+	FetchContent_Declare(glm_project
 
+		GIT_REPOSITORY https://github.com/g-truc/glm
 
-	if(NOT ${glm_exists})
+		GIT_TAG 0.9.9.8
 
-		FetchContent_Declare(glm
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/glm
 
-			GIT_REPOSITORY https://github.com/g-truc/glm
+	)
 
-			GIT_TAG 0.9.9.8
-
-			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/glm
-
-		)
-		FetchContent_MakeAvailable(glm)
-	endif()
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES glm_project)
 
 
 #repository download and settings for alias sdl_repo...
 
 
-	dir_exists(sdl_repo_exists ${PROJECT_SOURCE_DIR}/vendor/sdl_repo)
+	FetchContent_Declare(sdl_repo_project
 
+		GIT_REPOSITORY https://github.com/libsdl-org/SDL
 
-	if(NOT ${sdl_repo_exists})
+		GIT_TAG release-2.0.22
 
-		FetchContent_Declare(sdl_repo
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/sdl_repo
 
-			GIT_REPOSITORY https://github.com/libsdl-org/SDL
+	)
 
-			GIT_TAG release-2.0.22
-
-			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/sdl_repo
-
-		)
-		FetchContent_MakeAvailable(sdl_repo)
-	endif()
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES sdl_repo_project)
 
 
 #repository download and settings for alias fmt...
 
 
-	dir_exists(fmt_exists ${PROJECT_SOURCE_DIR}/vendor/fmt)
+	FetchContent_Declare(fmt_project
+
+		GIT_REPOSITORY https://github.com/fmtlib/fmt
+
+		GIT_TAG 8.1.1
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/fmt
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES fmt_project)
 
 
-	if(NOT ${fmt_exists})
+#repository download and settings for alias imgui_editor...
 
-		FetchContent_Declare(fmt
 
-			GIT_REPOSITORY https://github.com/fmtlib/fmt
+	FetchContent_Declare(imgui_editor_project
 
-			GIT_TAG 8.1.1
+		GIT_REPOSITORY https://github.com/BalazsJako/ImGuiColorTextEdit
 
-			SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/fmt
+		GIT_TAG origin/master
 
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/imgui_editor
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES imgui_editor_project)
+
+
+	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
+
+	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
+
+		FetchContent_GetProperties(${X}
+			SOURCE_DIR ${X}_SOURCE_DIR
+			BINARY_DIR ${X}_BINARY_DIR
 		)
-		FetchContent_MakeAvailable(fmt)
-	endif()
 
+	endforeach() 
 
 #creating library
 add_library(goodreminder SHARED
@@ -170,6 +166,20 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/sources/good_reminder/data_structures.cpp
 
+	${PROJECT_SOURCE_DIR}/sources/good_reminder/initial_window.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/framebuffer.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/index_buffer.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/shader.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/texture.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/vertex_array.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/vertex_buffer.cpp
+
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp
@@ -186,6 +196,8 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/misc/cpp/imgui_stdlib.cpp
 
+	${PROJECT_SOURCE_DIR}/vendor/imgui_editor/TextEditor.cpp
+
 )
 
 set_property(TARGET goodreminder PROPERTY CXX_STANDARD 17)
@@ -197,7 +209,9 @@ target_link_libraries(goodreminder PUBLIC EGL)
 target_link_libraries(goodreminder PUBLIC GLESv3)
 target_link_libraries(goodreminder PUBLIC android)
 target_link_libraries(goodreminder PUBLIC log)
+
 target_link_libraries(goodreminder PUBLIC SDL2)
+
 target_link_libraries(goodreminder PUBLIC fmt::fmt)
 
 

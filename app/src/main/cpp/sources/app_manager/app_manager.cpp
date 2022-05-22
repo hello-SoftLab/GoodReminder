@@ -5,6 +5,7 @@
 
 
 void AppManager::BeginFrame() {
+    static bool wantedTextInputLastFrame = false;
 
 
     // Start the Dear ImGui frame
@@ -16,11 +17,14 @@ void AppManager::BeginFrame() {
 
 
     if(AndroidData::IO().WantTextInput){
-        SDL_StartTextInput();
+            SDL_StartTextInput();
     }
-    else {
+    else{
         SDL_StopTextInput();
     }
+
+    wantedTextInputLastFrame = AndroidData::IO().WantTextInput;
+
 
 }
 
@@ -29,6 +33,8 @@ void AppManager::Draw() {
     ImGui::SetNextWindowPos(ImVec2(0,0));
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x,ImGui::GetIO().DisplaySize.y));
     if(ImGui::Begin("Hello!",0,ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoTitleBar)){
+
+
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,10);
