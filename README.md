@@ -6,7 +6,7 @@
 
 > GoodReminder is a project made for people who suffer from anxiety and from low self-worth;
 
-## 📙 How the idea came to life;
+## 📱 How the idea came to life;
 
 GoodReminder first came to be as a project after [Ingrid](https://github.com/ingavell) complained about always forgetting small daily victories.
 
