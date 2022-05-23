@@ -178,6 +178,8 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/sources/opengl_wrappers/vertex_buffer.cpp
 
+	${PROJECT_SOURCE_DIR}/sources/program_stages/loading_stage.cpp
+
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp

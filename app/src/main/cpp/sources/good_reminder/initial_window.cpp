@@ -2,35 +2,33 @@
 #include "../global.h"
 #include "../android_data/android_data.h"
 #include "../app_manager/app_manager.h"
+#include "../program_stages/loading_stage.h"
 
 void InitialWindow::Update() {
 
-    if(m_Properties.animationState == AnimationState::InitialAnimation){
-        std::string logoText = "Good Reminder";
-        ImGui::SetCursorPos(ImVec2(AndroidData::GetMonitorSize().x/2 - ImGui::CalcTextSize(logoText.c_str()).x/2,AndroidData::GetMonitorSize().y/2 - ImGui::CalcTextSize(logoText.c_str()).y/2));
-        float scale = 1;
-        if(m_Properties.animationTime > 5){
-            scale = ((m_Properties.animationTime - 4)*10);
-            if(scale < 0.01) {
-                m_Properties.animationState == AnimationState::NoAnimation;
-            }
-
-        }
-        ImGui::SetWindowFontScale(2 / scale);
-        ImGui::Text("%s", logoText.c_str());
-
+    if(m_Properties.m_CurrentStage){
+        m_Properties.m_CurrentStage.Get()->Update(AppManager::DeltaTime());
     }
 
 
 
-    m_Properties.animationTime += AppManager::DeltaTime();
+    m_UpdatePropertiesFunc();
+    m_UpdatePropertiesFunc = [](){};
 
 }
+
+void InitialWindow::ClearProgramStage() {
+  m_UpdatePropertiesFunc = [&](){
+      m_Properties.m_CurrentStage.ClearCurrentType();
+  };
+
+};
 
 void InitialWindow::Init() {
 
 
     AppManager::SetClearColor(Color(255,221,166)); //
+    InitialWindow::SetProgramStage<LoadingStage>();
 }
 
 ecspp::HelperClasses::FunctionSink<void()> InitialWindow::OnAnimationFinish() {
