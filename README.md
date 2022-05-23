@@ -1,8 +1,12 @@
+
+![logo-READMEOFFRED](https://user-images.githubusercontent.com/86024524/169919489-43516bfe-221f-4103-893b-8018ab7bb54d.png)
+
+
 # GoodReminder
 
 > GoodReminder is a project made for people who suffer from anxiety and from low self-worth;
 
-## How the idea came to life;
+## ☁️ How the idea came to life;
 
 GoodReminder first came to be as a project after [Ingrid](https://github.com/ingavell) complained about always forgetting small daily victories.
 
@@ -10,7 +14,7 @@ Those were crucial as they reminded her of not pushing herself so hard.
 
 She decided to try a journal, one practical enough to carry all the time, but also one that didn't show her today's entries so it couldn't allow making comparisons of prior days.
 
-## Action time;
+## 💻 Action time;
 
 The ideia went to [Otávio](https://github.com/knz13) and he suggested to make an app which would allow daily entries and also have the constraints showed before.
 
@@ -28,3 +32,5 @@ All of the info below has its own folder in this repository, don't forget to che
 
 
 
+---
+*Otávio and Ingrid on behalf of **🟠hello;***
