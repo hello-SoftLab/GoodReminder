@@ -1,6 +1,6 @@
 #pragma once
-#include "../includes.h"
-
+#include "../global.h"
+#include "ecspp.h"
 
 class Type2D {
 private:

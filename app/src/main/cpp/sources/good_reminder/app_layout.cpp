@@ -8,9 +8,6 @@ void AppLayout::Init() {
     InitialWindow::Init();
     AppManager::Drawing().Connect([](){
         InitialWindow::Update();
-
-
-
     });
 
 

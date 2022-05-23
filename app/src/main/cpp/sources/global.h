@@ -15,7 +15,9 @@
 #include "EGL/egl.h"
 #include "android/asset_manager.h"
 #include "../vendor/glm/glm/glm.hpp"
+#include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "SDL.h"
+#include "ecspp.h"
 #include <sstream>
 
 using namespace std;
@@ -36,5 +38,26 @@ bool GetGLError(int line, std::string file);
 #define GL_CALL(x) ClearGLErrors(); x; if(GetGLError(__LINE__,__FILE__)) {;}
 #define GL_CALL_WITH_RESULT(var,x) ClearGLErrors(); var = x; if(GetGLError(__LINE__,__FILE__)) {;}
 #endif
+
+
+#define GL_SIZEOF(x) TestSize(x)
+
+
+static unsigned int TestSize(unsigned int dataType) {
+    switch (dataType) {
+        case GL_FLOAT:
+            return sizeof(float);
+        case GL_UNSIGNED_INT:
+            return sizeof(unsigned int);
+        case GL_UNSIGNED_BYTE:
+            return sizeof(unsigned char);
+        case GL_BYTE:
+            return sizeof(char);
+        case GL_INT:
+            return sizeof(int);
+        default:
+            return 0;
+    }
+}
 
 

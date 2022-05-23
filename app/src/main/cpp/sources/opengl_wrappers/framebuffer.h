@@ -1,6 +1,7 @@
 #pragma once
 #include "../global.h"
 #include "texture.h"
+#include "../helpers/color.h"
 
 class Framebuffer {
 

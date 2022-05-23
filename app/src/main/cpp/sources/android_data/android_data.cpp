@@ -123,29 +123,29 @@ SDL_Window *AndroidData::CurrentWindow() {
     return m_WindowPointer;
 }
 
-HelperClasses::FunctionSink<void()> AndroidData::onDestroy() {
+ecspp::HelperClasses::FunctionSink<void()> AndroidData::onDestroy() {
     return {m_Terminating};
 }
 
-HelperClasses::FunctionSink<void()> AndroidData::onLowMemory() {
+ecspp::HelperClasses::FunctionSink<void()> AndroidData::onLowMemory() {
     return {m_LowMemoryEvent};
 }
 
-HelperClasses::FunctionSink<void()> AndroidData::onPause() {
+ecspp::HelperClasses::FunctionSink<void()> AndroidData::onPause() {
     return {m_DidEnterBgEvent};
 }
 
-HelperClasses::FunctionSink<void()> AndroidData::onResume() {
+ecspp::HelperClasses::FunctionSink<void()> AndroidData::onResume() {
     return {m_DidEnterFgEvent};
 }
 
-HelperClasses::FunctionSink<void(int,int)> AndroidData::onResize() {
+ecspp::HelperClasses::FunctionSink<void(int,int)> AndroidData::onResize() {
     return {m_ResizeEvent};
 }
-HelperClasses::FunctionSink<void(SDL_Event*)> AndroidData::onFingerDown() {
+ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> AndroidData::onFingerDown() {
     return {m_FingerDownEvent};
 }
-HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> AndroidData::onMultiGesture() {
+ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> AndroidData::onMultiGesture() {
     return {m_MultiGestureEvent};
 }
 

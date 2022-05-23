@@ -6,6 +6,14 @@
 
 void AppManager::BeginFrame() {
     static bool wantedTextInputLastFrame = false;
+    static float lastTime,currentTime;
+
+
+    currentTime = SDL_GetTicks()/1000.0f;
+
+    m_DeltaTime = currentTime - lastTime;
+
+    lastTime = currentTime;
 
 
     // Start the Dear ImGui frame
@@ -32,7 +40,8 @@ void AppManager::Draw() {
 
     ImGui::SetNextWindowPos(ImVec2(0,0));
     ImGui::SetNextWindowSize(ImVec2(ImGui::GetIO().DisplaySize.x,ImGui::GetIO().DisplaySize.y));
-    if(ImGui::Begin("Hello!",0,ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoTitleBar)){
+
+    if(ImGui::Begin("Hello!",0,ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoBackground)){
 
 
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding,10);
@@ -59,7 +68,7 @@ void AppManager::EndFrame() {
     GL_CALL(glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y));
     ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
     SDL_GL_SwapWindow(AndroidData::CurrentWindow());
-    GL_CALL(glClearColor(0.45f, 0.55f, 0.60f,1));
+    GL_CALL(glClearColor(m_ClearColor.Normalized().x,m_ClearColor.Normalized().y,m_ClearColor.Normalized().z,1));
     GL_CALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
@@ -90,8 +99,16 @@ bool AppManager::HandleFrameUpdate() {
 
 }
 
-HelperClasses::FunctionSink<void()> AppManager::Drawing() {
+ecspp::HelperClasses::FunctionSink<void()> AppManager::Drawing() {
     return {m_DrawingFunctions};
+}
+
+void AppManager::SetClearColor(Color color) {
+    m_ClearColor = color;
+}
+
+float AppManager::DeltaTime() {
+    return m_DeltaTime;
 }
 
 void ImGui::ScrollWhenDraggingOnVoid(const ImVec2 &delta, ImGuiMouseButton mouse_button) {

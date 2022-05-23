@@ -1,6 +1,12 @@
 #pragma once
 #include "../global.h"
 
+enum ShaderType {
+	Vertex=0,
+	Fragment,
+};
+
+
 class Shader;
 struct ShaderCreationProperties {
     ShaderCreationProperties(Shader& master);
@@ -21,7 +27,7 @@ struct ShaderUniformContainer {
 
 
 class Shader {
-    KV_CLASS
+
 public:
 
     Shader();

@@ -1,7 +1,6 @@
 #pragma once
 
-#include <app_manager/app_manager.h>
-#include "../helpers/helpers.h"
+
 #include "global.h"
 #include "SDL.h"
 
@@ -10,16 +9,17 @@ public:
 
     static void Init();
 
-    static HelperClasses::FunctionSink<void()> onDestroy();
-    static HelperClasses::FunctionSink<void()> onLowMemory();
-    static HelperClasses::FunctionSink<void()> onPause();
-    static HelperClasses::FunctionSink<void()> onResume();
-    static HelperClasses::FunctionSink<void(int,int)> onResize();
-    static HelperClasses::FunctionSink<void(SDL_Event*)> onFingerDown();
-    static HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
+    static ecspp::HelperClasses::FunctionSink<void()> onDestroy();
+    static ecspp::HelperClasses::FunctionSink<void()> onLowMemory();
+    static ecspp::HelperClasses::FunctionSink<void()> onPause();
+    static ecspp::HelperClasses::FunctionSink<void()> onResume();
+    static ecspp::HelperClasses::FunctionSink<void(int,int)> onResize();
+    static ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> onFingerDown();
+    static ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
 
     static float GetKeyboardHeight();
     static ImVec2 GetMonitorSize();
+
 
     static ImGuiIO& IO();
     static SDL_Window* CurrentWindow();
@@ -36,13 +36,14 @@ private:
 
 
 
-    static inline HelperClasses::EventLauncher<void(SDL_Event*)> m_FingerDownEvent;
-    static inline HelperClasses::EventLauncher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
-    static inline HelperClasses::EventLauncher<void(int,int)> m_ResizeEvent;
-    static inline HelperClasses::EventLauncher<void()> m_Terminating;
-    static inline HelperClasses::EventLauncher<void()> m_LowMemoryEvent;
-    static inline HelperClasses::EventLauncher<void()> m_DidEnterBgEvent;
-    static inline HelperClasses::EventLauncher<void()> m_DidEnterFgEvent;
+    static inline ecspp::HelperClasses::EventLauncher<void(SDL_Event*)> m_FingerDownEvent;
+    static inline ecspp::HelperClasses::EventLauncher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
+    static inline ecspp::HelperClasses::EventLauncher<void(int,int)> m_ResizeEvent;
+    static inline ecspp::HelperClasses::EventLauncher<void()> m_Terminating;
+    static inline ecspp::HelperClasses::EventLauncher<void()> m_LowMemoryEvent;
+    static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterBgEvent;
+    static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterFgEvent;
+
 
 
     static inline std::string m_GLSLVersion = "#version 300 es";

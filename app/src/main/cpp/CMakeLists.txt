@@ -56,22 +56,6 @@ project("app_project")
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES imgui_project)
 
 
-#repository download and settings for alias entt...
-
-
-	FetchContent_Declare(entt_project
-
-		GIT_REPOSITORY https://github.com/skypjack/entt
-
-		GIT_TAG origin/master
-
-		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/entt
-
-	)
-
-	list(APPEND ${PROJECT_NAME}_DEPENDENCIES entt_project)
-
-
 #repository download and settings for alias glm...
 
 
@@ -136,6 +120,22 @@ project("app_project")
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES imgui_editor_project)
 
 
+#repository download and settings for alias ecspp...
+
+
+	FetchContent_Declare(ecspp_project
+
+		GIT_REPOSITORY https://github.com/knz13/ecspp
+
+		GIT_TAG origin/main
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/ecspp
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES ecspp_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
@@ -157,8 +157,6 @@ add_library(goodreminder SHARED
 	${PROJECT_SOURCE_DIR}/sources/app_manager/app_manager.cpp
 
 	${PROJECT_SOURCE_DIR}/sources/helpers/color.cpp
-
-	${PROJECT_SOURCE_DIR}/sources/helpers/helpers.cpp
 
 	${PROJECT_SOURCE_DIR}/sources/global.cpp
 
@@ -200,7 +198,7 @@ add_library(goodreminder SHARED
 
 )
 
-set_property(TARGET goodreminder PROPERTY CXX_STANDARD 17)
+set_property(TARGET goodreminder PROPERTY CXX_STANDARD 20)
 
 
 #adding libraries...
@@ -214,6 +212,8 @@ target_link_libraries(goodreminder PUBLIC SDL2)
 
 target_link_libraries(goodreminder PUBLIC fmt::fmt)
 
+target_link_libraries(goodreminder PUBLIC ecspp)
+
 
 #adding includes...
 
@@ -224,10 +224,10 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/sources)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui/)
 
-target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/entt/single_include)
-
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/glm/)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/sdl_repo/include)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/fmt/include)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ecspp/include)
