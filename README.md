@@ -1,3 +1,7 @@
+
+![logo-READMEOFFRED](https://user-images.githubusercontent.com/86024524/169919489-43516bfe-221f-4103-893b-8018ab7bb54d.png)
+
+
 # GoodReminder
 
 > GoodReminder is a project made for people who suffer from anxiety and from low self-worth;
