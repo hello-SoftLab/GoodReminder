@@ -136,6 +136,38 @@ project("app_project")
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES ecspp_project)
 
 
+#repository download and settings for alias datetime...
+
+
+	FetchContent_Declare(datetime_project
+
+		GIT_REPOSITORY https://github.com/mobius3/asap
+
+		GIT_TAG master
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/datetime
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES datetime_project)
+
+
+#repository download and settings for alias stb...
+
+
+	FetchContent_Declare(stb_project
+
+		GIT_REPOSITORY https://github.com/nothings/stb
+
+		GIT_TAG origin/master
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/stb
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES stb_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
@@ -180,6 +212,8 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/sources/program_stages/loading_stage.cpp
 
+	${PROJECT_SOURCE_DIR}/sources/program_stages/calendar_stage.cpp
+
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp
@@ -216,6 +250,8 @@ target_link_libraries(goodreminder PUBLIC fmt::fmt)
 
 target_link_libraries(goodreminder PUBLIC ecspp)
 
+target_link_libraries(goodreminder PUBLIC asap)
+
 
 #adding includes...
 
@@ -233,3 +269,5 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/sdl_
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/fmt/include)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ecspp/include)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)
