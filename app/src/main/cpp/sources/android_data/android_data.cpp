@@ -231,7 +231,7 @@ void AndroidData::LoadImage(std::string name) {
 
         GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
         if (ecspp::HelperFunctions::HashClassName<Type2D>() == ecspp::HelperFunctions::HashClassName<Type2D>()) {
-            GL_CALL(glTexImage2D(texture.GetType(), 0, GL_RGBA8, contents.width, contents.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, contents.data.data()));
+            GL_CALL(glTexImage2D(texture.GetType(), 0, GL_RGBA, contents.width, contents.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, contents.data.data()));
         }
         GL_CALL(glGenerateMipmap(texture.GetType()));
 

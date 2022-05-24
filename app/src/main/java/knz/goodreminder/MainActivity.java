@@ -1,27 +1,15 @@
 package knz.goodreminder;
 
-import android.app.NativeActivity;
-import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
 
-import android.content.Context;
-import android.text.Html;
-import android.view.Gravity;
-import android.view.inputmethod.InputMethodManager;
-import android.view.KeyEvent;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.concurrent.LinkedBlockingQueue;
+
 import org.libsdl.app.SDLActivity;
-import org.libsdl.app.SDL;
 
 
 public class MainActivity extends SDLActivity {
@@ -35,7 +23,17 @@ public class MainActivity extends SDLActivity {
     }
     @Override
     protected String[] getLibraries() {
-        LoadImageContents("logo-ALLLETTERCASEOFF.png");
+
+        try {
+            String[] list = getAssets().list("logo");
+
+            for (String s : list) {
+                LoadImageContents("logo/" + s);
+            }
+        }
+        catch(IOException e){
+            System.out.println(e.getMessage());
+        }
         return new String[]{
                 "SDL2",
                 "goodreminder"
@@ -73,19 +71,14 @@ public class MainActivity extends SDLActivity {
             return;
         }
 
-        byte[] data = new byte[width*height];
 
-        try {
-            int read = stream.read(data);
-            if(read == 0) {
-                return;
-            }
-        }
-        catch(IOException e){
-            return;
-        }
+        ByteBuffer buffer = ByteBuffer.allocate(bitmap.getByteCount());
 
-        LoadImage(imageLoc.getBytes(),data,width,height);
+        bitmap.copyPixelsToBuffer(buffer);
+
+        buffer.rewind();
+
+        LoadImage(imageLoc.getBytes(),buffer.array(),width,height);
 
     }
 
