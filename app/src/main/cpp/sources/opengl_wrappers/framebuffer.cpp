@@ -27,7 +27,7 @@ Framebuffer::Framebuffer(float sizeX,float sizeY) : m_Size(sizeX,sizeY){
         
         this->Bind();
         
-        m_AttachedTexture = std::shared_ptr<Texture<Type2D>>(new Texture<Type2D>([=](Texture<Type2D>& tex){
+        m_AttachedTexture = std::shared_ptr<Texture<Type2D>>(new Texture<Type2D>(sizeX,sizeY,[=](Texture<Type2D>& tex){
             tex.Bind();
 
             GL_CALL(glTexStorage2D(GL_TEXTURE_2D, 1, GL_RGBA32F, sizeX, sizeY));

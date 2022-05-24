@@ -221,7 +221,7 @@ void AndroidData::LoadImage(std::string name) {
 
     LoadedFileContents contents = m_ImagesToBeLoaded[name];
 
-    Texture<Type2D> tex([=](Texture<Type2D>& texture){
+    Texture<Type2D> tex(contents.width,contents.height,[=](Texture<Type2D>& texture){
 
         texture.Bind();
         GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_S, GL_REPEAT));

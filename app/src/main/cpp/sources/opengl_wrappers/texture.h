@@ -17,7 +17,7 @@ template<typename TextureType>
 class Texture {
 
 public:
-    Texture(std::function<void(Texture&)> initializerFunc) {
+    Texture(int width,int height,std::function<void(Texture&)> initializerFunc) : m_Width(width),m_Height(height){
         if (!m_ID) {
             auto deleter = [](unsigned int* id) {
                 GL_CALL(glDeleteTextures(1, id));
@@ -31,7 +31,7 @@ public:
         this->Unbind();
     }
 
-    Texture() {
+    Texture() : m_Width(-1),m_Height(-1){
         FigureOutType();
     }
 
@@ -41,6 +41,14 @@ public:
 
     GLenum GetType() {
         return m_TextureType;
+    }
+
+    int GetWidth() {
+        return m_Width;
+    }
+
+    int GetHeight() {
+        return m_Height;
     }
 
     void Bind() {
@@ -69,7 +77,9 @@ private:
         }
     };
 
+
     GLenum m_TextureType;
+    int m_Width,m_Height;
     std::shared_ptr<unsigned int> m_ID;
 
 
