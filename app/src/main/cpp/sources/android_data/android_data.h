@@ -4,6 +4,12 @@
 #include "global.h"
 #include "SDL.h"
 
+struct LoadedFileContents {
+    int width = -1;
+    int height = -1;
+    std::vector<unsigned char> data;
+};
+
 class AndroidData {
 public:
 
@@ -17,6 +23,7 @@ public:
     static ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> onFingerDown();
     static ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
 
+    static LoadedFileContents ReadFileBytes(std::string path);
     static float GetKeyboardHeight();
     static ImVec2 GetMonitorSize();
 

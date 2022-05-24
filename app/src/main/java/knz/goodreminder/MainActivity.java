@@ -1,6 +1,8 @@
 package knz.goodreminder;
 
 import android.app.NativeActivity;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
 import android.os.Bundle;
 
@@ -12,6 +14,10 @@ import android.view.KeyEvent;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDL;
@@ -39,4 +45,26 @@ public class MainActivity extends SDLActivity {
         float height = getWindow().getDecorView().getHeight() - (rect.bottom);
         return height;
     }
+
+    public Bitmap loadFileContents(String file) {
+        InputStream stream = getClass().getResourceAsStream(file);
+
+        Bitmap bitmap;
+
+
+        return BitmapFactory.decodeFile(file);
+
+
+
+
+    };
+
+    public static byte[] convertBitmapToByteArray(Bitmap bitmap){
+        ByteBuffer byteBuffer = ByteBuffer.allocate(bitmap.getByteCount());
+        bitmap.copyPixelsToBuffer(byteBuffer);
+        byteBuffer.rewind();
+        return byteBuffer.array();
+    }
 }
+
+

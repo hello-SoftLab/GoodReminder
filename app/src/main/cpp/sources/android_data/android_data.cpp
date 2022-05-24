@@ -210,3 +210,58 @@ ImVec2 AndroidData::GetMonitorSize() {
     return {static_cast<float>(m_DisplayProperties.w),static_cast<float>(m_DisplayProperties.h)};
 }
 
+LoadedFileContents AndroidData::ReadFileBytes(std::string path) {
+    LoadedFileContents contents;
+
+    JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
+
+    jobject activity = (jobject)SDL_AndroidGetActivity();
+
+    jclass clazz(env->GetObjectClass(activity));
+
+    jmethodID method_id = env->GetMethodID(clazz, "loadFileContents", "(Ljava/lang/String)[B");
+
+    jstring stringVal = env->NewStringUTF(path.c_str());
+
+    jobject bitmap = env->CallObjectMethod(activity,method_id,stringVal);
+
+    if(bitmap == nullptr){
+        return contents;
+    }
+
+    jclass bitmapClass = env->GetObjectClass(bitmap);
+
+    jmethodID gettingWidth = env->GetMethodID(bitmapClass,"getWidth","()I");
+
+    jint width = env->CallIntMethod(bitmap,gettingWidth);
+
+    if(width != 0){
+
+        contents.width = width;
+
+        jmethodID gettingHeight = env->GetMethodID(bitmapClass,"getHeight","()I");
+
+        jint height = env->CallIntMethod(bitmap,gettingHeight);
+
+    }
+
+    jmethodID convertBitmapToByte = env->GetMethodID(clazz,"convertBitmapToByteArray","(Landroid/graphics/Bitmap)[B");
+
+    jbyteArray byteArr = (jbyteArray)env->CallObjectMethod(activity,convertBitmapToByte,bitmap);
+
+
+    jsize num_bytes = env->GetArrayLength(byteArr);
+
+    jbyte* elements = env->GetByteArrayElements(byteArr,nullptr);
+
+    for(int i = 0;i< num_bytes;i++){
+        contents.data.push_back(elements[i]);
+    }
+
+    return contents;
+
+
+
+
+}
+
