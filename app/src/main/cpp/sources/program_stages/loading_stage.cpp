@@ -1,20 +1,11 @@
 #include "loading_stage.h"
 #include <fstream>
+#include "../android_data/android_data.h"
+
 
 void LoadingStage::Init() {
-    std::string path = "";
 
-
-    path += "data/data/knz.goodreminder/";
-    path += "logo_alletercaseoff.png";
-    //m_Texture = LoadTextureFromFile<Type2D>( path);
-
-    if(!std::filesystem::exists(path)){
-        std::fstream stream;
-        stream.open(path);
-        stream << "i";
-        stream.close();
-    }
+    m_Texture = AndroidData::GetLoadedTexture( "logo-ALLLETTERCASEOFF.png");
 
 }
 

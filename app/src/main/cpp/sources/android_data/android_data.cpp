@@ -56,7 +56,12 @@ bool AndroidData::InitializeContext() {
 
     // enable VSync
     SDL_GL_SetSwapInterval(1);
-    
+
+    for(auto& [name,contents] : m_ImagesToBeLoaded){
+        LoadImage(name);
+    }
+
+
     return true;
 }
 
@@ -113,8 +118,6 @@ bool AndroidData::InitializeImGui() {
 
     ImGui_ImplSDL2_InitForOpenGL(m_WindowPointer,m_Context);
     ImGui_ImplOpenGL3_Init(m_GLSLVersion.c_str());
-
-
 
     return true;
 }
@@ -210,58 +213,52 @@ ImVec2 AndroidData::GetMonitorSize() {
     return {static_cast<float>(m_DisplayProperties.w),static_cast<float>(m_DisplayProperties.h)};
 }
 
-LoadedFileContents AndroidData::ReadFileBytes(std::string path) {
-    LoadedFileContents contents;
+void AndroidData::LoadImage(std::string name) {
 
-    JNIEnv* env = (JNIEnv*)SDL_AndroidGetJNIEnv();
-
-    jobject activity = (jobject)SDL_AndroidGetActivity();
-
-    jclass clazz(env->GetObjectClass(activity));
-
-    jmethodID method_id = env->GetMethodID(clazz, "loadFileContents", "(Ljava/lang/String)[B");
-
-    jstring stringVal = env->NewStringUTF(path.c_str());
-
-    jobject bitmap = env->CallObjectMethod(activity,method_id,stringVal);
-
-    if(bitmap == nullptr){
-        return contents;
+    if(m_ImagesToBeLoaded.find(name) == m_ImagesToBeLoaded.end()){
+        return;
     }
 
-    jclass bitmapClass = env->GetObjectClass(bitmap);
+    LoadedFileContents contents = m_ImagesToBeLoaded[name];
 
-    jmethodID gettingWidth = env->GetMethodID(bitmapClass,"getWidth","()I");
+    Texture<Type2D> tex([=](Texture<Type2D>& texture){
 
-    jint width = env->CallIntMethod(bitmap,gettingWidth);
+        texture.Bind();
+        GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_S, GL_REPEAT));
+        GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_T, GL_REPEAT));
+        GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+        GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
-    if(width != 0){
+        GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
+        if (ecspp::HelperFunctions::HashClassName<Type2D>() == ecspp::HelperFunctions::HashClassName<Type2D>()) {
+            GL_CALL(glTexImage2D(texture.GetType(), 0, GL_RGBA8, contents.width, contents.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, contents.data.data()));
+        }
+        GL_CALL(glGenerateMipmap(texture.GetType()));
 
-        contents.width = width;
+        texture.Unbind();
+    });
 
-        jmethodID gettingHeight = env->GetMethodID(bitmapClass,"getHeight","()I");
-
-        jint height = env->CallIntMethod(bitmap,gettingHeight);
-
+    if(tex){
+        m_LoadedImages[name] = tex;
     }
-
-    jmethodID convertBitmapToByte = env->GetMethodID(clazz,"convertBitmapToByteArray","(Landroid/graphics/Bitmap)[B");
-
-    jbyteArray byteArr = (jbyteArray)env->CallObjectMethod(activity,convertBitmapToByte,bitmap);
-
-
-    jsize num_bytes = env->GetArrayLength(byteArr);
-
-    jbyte* elements = env->GetByteArrayElements(byteArr,nullptr);
-
-    for(int i = 0;i< num_bytes;i++){
-        contents.data.push_back(elements[i]);
-    }
-
-    return contents;
-
-
-
-
 }
+
+Texture<Type2D> AndroidData::GetLoadedTexture(std::string path) {
+    if(m_LoadedImages.find(path) != m_LoadedImages.end()){
+        return m_LoadedImages[path];
+    }
+    return {};
+}
+
+void AndroidData::SetImageToBeLoaded(std::string name, std::vector<unsigned char> data, int width,
+                                     int height) {
+    LoadedFileContents contents;
+    contents.data = data;
+    contents.width = width;
+    contents.height = height;
+    m_ImagesToBeLoaded[name] = contents;
+}
+
+
+
 

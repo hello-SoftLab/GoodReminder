@@ -6,6 +6,7 @@
 #include "../vendor/imgui/misc/cpp/imgui_stdlib.h"
 #include "../vendor/entt/single_include/entt/entt.hpp"
 #include "android/log.h"
+#include "android/obb.h"
 #include "fmt/format.h"
 #include <jni.h>
 #include <iostream>
@@ -18,6 +19,8 @@
 #include "../vendor/glm/glm/gtc/type_ptr.hpp"
 #include "SDL.h"
 #include "ecspp.h"
+#include "android_native_app_glue.h"
+#include "android/asset_manager_jni.h"
 #include <sstream>
 
 using namespace std;

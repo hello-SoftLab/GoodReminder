@@ -1,6 +1,7 @@
 package knz.goodreminder;
 
 import android.app.NativeActivity;
+import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -25,15 +26,21 @@ import org.libsdl.app.SDL;
 
 public class MainActivity extends SDLActivity {
 
+    static {
+        System.loadLibrary("goodreminder");
+    }
+
     public void onCreate(Bundle savedConfigs){
         super.onCreate(savedConfigs);
     }
     @Override
     protected String[] getLibraries() {
+        LoadImageContents("logo-ALLLETTERCASEOFF.png");
         return new String[]{
                 "SDL2",
                 "goodreminder"
         };
+
     }
 
     public float getKeyboardScreenHeight() {
@@ -46,25 +53,46 @@ public class MainActivity extends SDLActivity {
         return height;
     }
 
-    public Bitmap loadFileContents(String file) {
-        InputStream stream = getClass().getResourceAsStream(file);
+    public void LoadImageContents(String imageLoc){
 
-        Bitmap bitmap;
+        InputStream stream;
+        try {
+            stream = getAssets().open(imageLoc);
+        }
+        catch(IOException e){
+            return;
+        }
 
 
-        return BitmapFactory.decodeFile(file);
+        Bitmap bitmap = BitmapFactory.decodeStream(stream);
 
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
 
+        if(width == 0){
+            return;
+        }
 
+        byte[] data = new byte[width*height];
 
-    };
+        try {
+            int read = stream.read(data);
+            if(read == 0) {
+                return;
+            }
+        }
+        catch(IOException e){
+            return;
+        }
 
-    public static byte[] convertBitmapToByteArray(Bitmap bitmap){
-        ByteBuffer byteBuffer = ByteBuffer.allocate(bitmap.getByteCount());
-        bitmap.copyPixelsToBuffer(byteBuffer);
-        byteBuffer.rewind();
-        return byteBuffer.array();
+        LoadImage(imageLoc.getBytes(),data,width,height);
+
     }
+
+
+
+    public native void LoadImage(byte[] name,byte[] bytes,int width,int height);
+
 }
 
 

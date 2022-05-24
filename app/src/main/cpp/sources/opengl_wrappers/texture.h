@@ -1,7 +1,6 @@
 #pragma once
 #include "../global.h"
 #include "ecspp.h"
-#include "../android_data/android_data.h"
 
 class Type2D {
 private:
@@ -87,7 +86,8 @@ static Texture<TextureType> LoadTextureFromFile(std::string path) {
     {
         return {};
     }
-    int width, height, nrChannels;
+
+    int width,height,nrChannels;
 
 
     unsigned char* data = ReadTextureFile(path,&width,&height,&nrChannels);

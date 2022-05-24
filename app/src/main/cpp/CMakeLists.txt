@@ -214,6 +214,7 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/sources/program_stages/calendar_stage.cpp
 
+	${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp
@@ -259,6 +260,8 @@ target_link_libraries(goodreminder PUBLIC asap)
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/sources)
+
+target_include_directories(goodreminder PUBLIC ${ANDROID_NDK}/sources/android/native_app_glue)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/imgui/)
 

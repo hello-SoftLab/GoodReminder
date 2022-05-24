@@ -3,6 +3,7 @@
 
 #include "global.h"
 #include "SDL.h"
+#include "../opengl_wrappers/texture.h"
 
 struct LoadedFileContents {
     int width = -1;
@@ -23,7 +24,13 @@ public:
     static ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> onFingerDown();
     static ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
 
-    static LoadedFileContents ReadFileBytes(std::string path);
+
+    static Texture<Type2D> GetLoadedTexture(std::string path);
+
+    static void LoadImage(std::string name);
+    static void SetImageToBeLoaded(std::string name,std::vector<unsigned char> data,int width,int height);
+
+
     static float GetKeyboardHeight();
     static ImVec2 GetMonitorSize();
 
@@ -52,7 +59,8 @@ private:
     static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterFgEvent;
 
 
-
+    static inline std::unordered_map<std::string,LoadedFileContents> m_ImagesToBeLoaded;
+    static inline std::unordered_map<std::string,Texture<Type2D>> m_LoadedImages;
     static inline std::string m_GLSLVersion = "#version 300 es";
     static inline SDL_DisplayMode m_DisplayProperties;
     static inline ImGuiIO* m_IO = nullptr;
