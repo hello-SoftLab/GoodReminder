@@ -53,7 +53,6 @@ void AppManager::Draw() {
         ImGui::PopStyleVar(3);
 
 
-        ImGui::ScrollWhenDraggingOnVoid(ImVec2(0.0f,-AndroidData::IO().MouseDelta.y),ImGuiMouseButton_Left);
     }
 
     ImGui::End();
@@ -88,6 +87,12 @@ bool AppManager::HandleFrameUpdate() {
                 break;
         }
     }
+    static ImVec2 oldMousePos;
+
+    m_MouseDelta.x = ImGui::GetMousePos().x - oldMousePos.x;
+    m_MouseDelta.y = ImGui::GetMousePos().y - oldMousePos.y;
+
+    oldMousePos = ImGui::GetMousePos();
 
     BeginFrame();
 
@@ -111,17 +116,5 @@ float AppManager::DeltaTime() {
     return m_DeltaTime;
 }
 
-void ImGui::ScrollWhenDraggingOnVoid(const ImVec2 &delta, ImGuiMouseButton mouse_button) {
 
-    ImGuiContext& g = *ImGui::GetCurrentContext();
-    ImGuiWindow* window = g.CurrentWindow;
-    bool hovered = false;
-    bool held = false;
-    ImGuiButtonFlags button_flags = (mouse_button == 0) ? ImGuiButtonFlags_MouseButtonLeft : (mouse_button == 1) ? ImGuiButtonFlags_MouseButtonRight : ImGuiButtonFlags_MouseButtonMiddle;
-    if (g.HoveredId == 0) // If nothing hovered so far in the frame (not same as IsAnyItemHovered()!)
-        ImGui::ButtonBehavior(window->Rect(), window->GetID("##scrolldraggingoverlay"), &hovered, &held, button_flags);
-    if (held && delta.x != 0.0f)
-        ImGui::SetScrollX(window, window->Scroll.x + delta.x);
-    if (held && delta.y != 0.0f)
-        ImGui::SetScrollY(window, window->Scroll.y + delta.y);
-}
+

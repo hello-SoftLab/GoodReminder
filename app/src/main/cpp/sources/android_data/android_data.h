@@ -21,9 +21,10 @@ public:
     static ecspp::HelperClasses::FunctionSink<void()> onPause();
     static ecspp::HelperClasses::FunctionSink<void()> onResume();
     static ecspp::HelperClasses::FunctionSink<void(int,int)> onResize();
-    static ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> onFingerDown();
+    static ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> onFingerEvent();
     static ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
 
+    static ImVec2 GetDragDelta();
 
     static Texture<Type2D> GetLoadedTexture(std::string path);
 
@@ -49,7 +50,6 @@ private:
     static void ShutDown();
 
 
-
     static inline ecspp::HelperClasses::EventLauncher<void(SDL_Event*)> m_FingerDownEvent;
     static inline ecspp::HelperClasses::EventLauncher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
     static inline ecspp::HelperClasses::EventLauncher<void(int,int)> m_ResizeEvent;
@@ -59,6 +59,7 @@ private:
     static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterFgEvent;
 
 
+    static inline ImVec2 m_DragDelta;
     static inline std::unordered_map<std::string,LoadedFileContents> m_ImagesToBeLoaded;
     static inline std::unordered_map<std::string,Texture<Type2D>> m_LoadedImages;
     static inline std::string m_GLSLVersion = "#version 300 es";

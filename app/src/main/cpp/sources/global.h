@@ -8,6 +8,7 @@
 #include "android/log.h"
 #include "android/obb.h"
 #include "fmt/format.h"
+#include "../vendor/datetime/include/asap/datetime.h"
 #include <jni.h>
 #include <iostream>
 #include "jni.h"
@@ -64,3 +65,8 @@ static unsigned int TestSize(unsigned int dataType) {
 }
 
 
+#include "imgui_internal.h"
+namespace ImGui {
+    void ScrollWhenDraggingOnVoid(const ImVec2 &delta, ImGuiMouseButton mouse_button);
+
+};

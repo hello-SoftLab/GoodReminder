@@ -15,6 +15,7 @@ private:
     static inline ecspp::HelperClasses::EventLauncher<void()> m_DrawingFunctions;
     static inline Color m_ClearColor = Color::White;
     static inline float m_DeltaTime = 0;
+    static inline ImVec2 m_MouseDelta;
 
 
     static bool HandleFrameUpdate();
@@ -27,10 +28,3 @@ private:
     friend class AndroidData;
 };
 
-//useful imgui functions
-
-#include "imgui_internal.h"
-namespace ImGui {
-    void ScrollWhenDraggingOnVoid(const ImVec2 &delta, ImGuiMouseButton mouse_button);
-
-}

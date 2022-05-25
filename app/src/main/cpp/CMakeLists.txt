@@ -273,4 +273,6 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/fmt/
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ecspp/include)
 
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/datetime/include)
+
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)

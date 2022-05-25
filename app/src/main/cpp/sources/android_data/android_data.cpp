@@ -22,7 +22,7 @@ void AndroidData::Init() {
 
 
     while(AppManager::HandleFrameUpdate()){
-
+        m_DragDelta = ImVec2(0,0);
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -119,6 +119,13 @@ bool AndroidData::InitializeImGui() {
     ImGui_ImplSDL2_InitForOpenGL(m_WindowPointer,m_Context);
     ImGui_ImplOpenGL3_Init(m_GLSLVersion.c_str());
 
+    onFingerEvent().Connect([](SDL_Event* ev){
+        if(ev->tfinger.type == SDL_FINGERMOTION){
+            m_DragDelta.x = ev->tfinger.dx;
+            m_DragDelta.y = ev->tfinger.dy;
+        }
+    });
+
     return true;
 }
 
@@ -145,7 +152,7 @@ ecspp::HelperClasses::FunctionSink<void()> AndroidData::onResume() {
 ecspp::HelperClasses::FunctionSink<void(int,int)> AndroidData::onResize() {
     return {m_ResizeEvent};
 }
-ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> AndroidData::onFingerDown() {
+ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> AndroidData::onFingerEvent() {
     return {m_FingerDownEvent};
 }
 ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> AndroidData::onMultiGesture() {
@@ -174,6 +181,15 @@ int AndroidData::EventFilter(void *userData, SDL_Event *event) {
             break;
         case SDL_MULTIGESTURE:
             m_MultiGestureEvent.EmitEvent(event->mgesture);
+            break;
+        case SDL_FINGERDOWN:
+            m_FingerDownEvent.EmitEvent(event);
+            break;
+        case SDL_FINGERUP:
+            m_FingerDownEvent.EmitEvent(event);
+            break;
+        case SDL_FINGERMOTION:
+            m_FingerDownEvent.EmitEvent(event);
             break;
     }
 
@@ -209,7 +225,6 @@ float AndroidData::GetKeyboardHeight() {
 }
 
 ImVec2 AndroidData::GetMonitorSize() {
-
     return {static_cast<float>(m_DisplayProperties.w),static_cast<float>(m_DisplayProperties.h)};
 }
 
@@ -257,6 +272,10 @@ void AndroidData::SetImageToBeLoaded(std::string name, std::vector<unsigned char
     contents.width = width;
     contents.height = height;
     m_ImagesToBeLoaded[name] = contents;
+}
+
+ImVec2 AndroidData::GetDragDelta() {
+    return m_DragDelta;
 }
 
 
