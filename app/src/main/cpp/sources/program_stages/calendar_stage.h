@@ -15,7 +15,9 @@ private:
     int m_CurrentYear;
     int m_LowerBound,m_UpperBound;
     bool m_ShouldScroll = false;
-    ImVec2 m_ScrollDelta;
+    float m_ScrollValue = 0;
+    float m_ScrollFriction = 40;
+    float m_ScrollAccel;
     size_t m_ConnectionID = 0;
 
 

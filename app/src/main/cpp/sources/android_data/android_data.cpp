@@ -23,6 +23,23 @@ void AndroidData::Init() {
 
     while(AppManager::HandleFrameUpdate()){
         m_DragDelta = ImVec2(0,0);
+
+        auto it = m_DelayedFunctions.begin();
+        while(it != m_DelayedFunctions.end()){
+
+            if(it->currentTimer > it -> maxTime){
+                it->m_Function();
+                it = m_DelayedFunctions.erase(it);
+                continue;
+            }
+
+            it->currentTimer += AppManager::DeltaTime();
+
+
+            it++;
+        }
+
+
     }
 
     ImGui_ImplOpenGL3_Shutdown();
@@ -78,7 +95,11 @@ bool AndroidData::InitializeWindow() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     SDL_GetCurrentDisplayMode(0,&m_DisplayProperties);
+    SDL_GetDisplayBounds(0,&m_Dimensions);
 
+    TimedFunctionCall(5,[&](){
+        SDL_GetDisplayBounds(0,&m_Dimensions);
+    });
 
 
     m_WindowPointer = SDL_CreateWindow(
@@ -121,8 +142,8 @@ bool AndroidData::InitializeImGui() {
 
     onFingerEvent().Connect([](SDL_Event* ev){
         if(ev->tfinger.type == SDL_FINGERMOTION){
-            m_DragDelta.x = ev->tfinger.dx;
-            m_DragDelta.y = ev->tfinger.dy;
+            m_DragDelta.x = ev->tfinger.dx * AndroidData::GetMonitorSize().x;
+            m_DragDelta.y = ev->tfinger.dy * AndroidData::GetMonitorSize().y;
         }
     });
 
@@ -179,6 +200,9 @@ int AndroidData::EventFilter(void *userData, SDL_Event *event) {
                 m_ResizeEvent.EmitEvent(event->window.data1,event->window.data2);
             }
             break;
+        case SDL_WINDOWEVENT_DISPLAY_CHANGED:
+            SDL_GetDisplayBounds(0,&m_Dimensions);
+            break;
         case SDL_MULTIGESTURE:
             m_MultiGestureEvent.EmitEvent(event->mgesture);
             break;
@@ -225,7 +249,7 @@ float AndroidData::GetKeyboardHeight() {
 }
 
 ImVec2 AndroidData::GetMonitorSize() {
-    return {static_cast<float>(m_DisplayProperties.w),static_cast<float>(m_DisplayProperties.h)};
+    return {static_cast<float>(m_Dimensions.w),static_cast<float>(m_Dimensions.h)};
 }
 
 void AndroidData::LoadImage(std::string name) {
@@ -276,6 +300,14 @@ void AndroidData::SetImageToBeLoaded(std::string name, std::vector<unsigned char
 
 ImVec2 AndroidData::GetDragDelta() {
     return m_DragDelta;
+}
+
+void AndroidData::TimedFunctionCall(float delay, std::function<void()> func) {
+    DelayedFunctionStructure prop;
+    prop.maxTime = delay;
+    prop.m_Function = func;
+
+    m_DelayedFunctions.push_back(prop);
 }
 
 

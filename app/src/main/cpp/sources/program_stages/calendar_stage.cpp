@@ -12,11 +12,18 @@ void CalendarStage::Init() {
 
     m_ConnectionID = AndroidData::onFingerEvent().Connect([&](SDL_Event* event){
         if(event->tfinger.type == SDL_FINGERMOTION){
-            m_ScrollDelta.x = event->tfinger.dx * AndroidData::GetMonitorSize().x;
-            m_ScrollDelta.y = event->tfinger.dy * AndroidData::GetMonitorSize().y;
+            m_ScrollAccel = event->tfinger.dy*AndroidData::GetMonitorSize().y;
             m_ShouldScroll = true;
+
+            
         }
+
+
     });
+
+
+
+
 }
 
 
@@ -24,41 +31,50 @@ void CalendarStage::Update(float deltaTime) {
 
     using namespace asap::literals;
     ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/7);
-    ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/4);
+    ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/6 - ImGui::CalcTextSize("A").y);
 
-    ImGui::BeginChild("CalendarChild",ImVec2(5*AndroidData::GetMonitorSize().x/7,3*AndroidData::GetMonitorSize().y/5),ImGuiWindowFlags_NoBackground);
+    ImGui::Text("%s", std::to_string(m_LowerBound).c_str());
+
+    ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/7);
+    ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/6);
+
+    ImGui::BeginChild("CalendarChild",ImVec2(5*AndroidData::GetMonitorSize().x/7,5*AndroidData::GetMonitorSize().y/7),false,ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
     ImGui::SetWindowFontScale(3);
-    for(auto month : asap::datetime(m_LowerBound,0,0).until(asap::datetime(m_UpperBound,0,0)).every(1_month)){
+
+    auto endDate = asap::datetime(m_LowerBound,0,1) + 1_year - 1_day;
+
+    if(endDate.year() == asap::now().year()){
+        endDate = asap::now();
+    }
+
+    for(auto month : (asap::datetime(m_LowerBound,0,1)).until(endDate).every(1_month)){
 
         if(month.month() == 0){
-            ImGui::Text("%s",std::to_string(month.year()).c_str());
+            month += 1_day;
+            month -= 1_day;
         }
 
+        ImGui::SetCursorPosX(ImGui::GetWindowSize().x/2 - ImGui::CalcTextSize(GetMonthName(month.month()).c_str()).x/2);
         ImGui::Text("%s", GetMonthName(month.month()).c_str());
-        if(month.month() == 0 && m_LowerBound == month.year()){
-            if(ImGui::IsItemVisible()){
-                //m_LowerBound--;
-            }
-        }
-        if(month.month() == 5){
-            if(ImGui::IsItemVisible()){
-                m_LowerBound = month.year();
-                m_UpperBound = m_LowerBound + 1;
-            }
-        }
-        if(month.month() == 11 && month.year() == m_UpperBound){
-            if(ImGui::IsItemVisible()){
-                //m_UpperBound++;
-            }
-        }
 
-        if(ImGui::BeginTable(("##TableForMonth" + std::to_string(month.month()) + "OfYear" + std::to_string(m_CurrentYear)).c_str(),7)) {
-            for (auto day: month.until(month + 1_month).every(1_day)) {
-                ImGui::TableNextColumn();
-                if(ImGui::Selectable(std::to_string(day.mday()).c_str(),false,ImGuiSelectableFlags_SpanAvailWidth)){
 
+        if(ImGui::BeginTable(("##TableForMonth" + std::to_string(month.month()) + "OfYear" + std::to_string(m_CurrentYear)).c_str(),7,ImGuiTableFlags_SizingStretchSame)) {
+
+            auto endDay = month + 1_month - 1_day;
+
+            if(month.year() == asap::now().year() && month.month() == asap::now().month()){
+                endDay = asap::now();
+            }
+
+
+            for (auto day: month.until(endDay).every(1_day)) {
+
+                while(day.wday() != ImGui::TableGetColumnIndex()){
+                    ImGui::TableNextColumn();
                 }
 
+
+                ImGui::Text("%s",std::to_string(day.mday()).c_str());
 
             }
             ImGui::EndTable();
@@ -66,14 +82,25 @@ void CalendarStage::Update(float deltaTime) {
     }
 
     if(m_ShouldScroll){
-        ImGui::SetScrollY(ImGui::GetScrollY() - m_ScrollDelta.y);
-        m_ShouldScroll = false;
+        ImGui::SetScrollY(ImGui::GetScrollY() - m_ScrollAccel);
+
+        if(m_ScrollAccel > 0) {
+            m_ScrollAccel -= m_ScrollFriction * AppManager::DeltaTime();
+        }
+        if(m_ScrollAccel < 0) {
+            m_ScrollAccel += m_ScrollFriction * AppManager::DeltaTime();
+        }
+
+        if(abs(m_ScrollAccel) < 1){
+            m_ShouldScroll = false;
+        }
+        if(ImGui::GetScrollY() == ImGui::GetScrollMaxY()){
+            m_ShouldScroll = false;
+        }
     }
 
 
     ImGui::EndChild();
-
-
 
 
 

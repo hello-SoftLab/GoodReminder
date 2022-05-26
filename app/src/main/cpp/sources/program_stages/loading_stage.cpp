@@ -24,7 +24,7 @@ void LoadingStage::Update(float deltaTime) {
         if(animationTime < 1.5) {
             ImGui::PopStyleVar();
         }
-        if(animationTime > 3) {
+        if(animationTime > 2.5) {
             InitialWindow::SetProgramStage<CalendarStage>();
         }
 
