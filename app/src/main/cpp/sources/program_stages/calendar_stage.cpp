@@ -4,6 +4,8 @@
 #include "../android_data/android_data.h"
 #include "../../vendor/datetime/include/asap/literals.h"
 #include "../app_manager/app_manager.h"
+#include "older_day_stage.h"
+#include "current_day_stage.h"
 
 void CalendarStage::Init() {
 
@@ -15,7 +17,7 @@ void CalendarStage::Init() {
             m_ScrollAccel = event->tfinger.dy*AndroidData::GetMonitorSize().y;
             m_ShouldScroll = true;
 
-            
+
         }
 
 
@@ -30,16 +32,16 @@ void CalendarStage::Init() {
 void CalendarStage::Update(float deltaTime) {
 
     using namespace asap::literals;
-    ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/7);
-    ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/6 - ImGui::CalcTextSize("A").y);
 
-    ImGui::Text("%s", std::to_string(m_LowerBound).c_str());
 
     ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/7);
     ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/6);
 
-    ImGui::BeginChild("CalendarChild",ImVec2(5*AndroidData::GetMonitorSize().x/7,5*AndroidData::GetMonitorSize().y/7),false,ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_NoScrollbar);
     ImGui::SetWindowFontScale(3);
+
+    ImGui::PushStyleColor(ImGuiCol_ChildBg,Color::White.AsImVec4());
+    ImGui::BeginChild("CalendarChild",ImVec2(5*AndroidData::GetMonitorSize().x/7,4*AndroidData::GetMonitorSize().y/6),true,ImGuiWindowFlags_NoScrollbar);
+    ImGui::PopStyleColor();
 
     auto endDate = asap::datetime(m_LowerBound,0,1) + 1_year - 1_day;
 
@@ -58,7 +60,7 @@ void CalendarStage::Update(float deltaTime) {
         ImGui::Text("%s", GetMonthName(month.month()).c_str());
 
 
-        if(ImGui::BeginTable(("##TableForMonth" + std::to_string(month.month()) + "OfYear" + std::to_string(m_CurrentYear)).c_str(),7,ImGuiTableFlags_SizingStretchSame)) {
+        if(ImGui::BeginTable(("##TableForMonth" + std::to_string(month.month()) + "OfYear" + std::to_string(m_CurrentYear)).c_str(),7)) {
 
             auto endDay = month + 1_month - 1_day;
 
@@ -73,8 +75,7 @@ void CalendarStage::Update(float deltaTime) {
                     ImGui::TableNextColumn();
                 }
 
-
-                ImGui::Text("%s",std::to_string(day.mday()).c_str());
+                SetupInnerSquare(m_LowerBound,month.month(),day.mday());
 
             }
             ImGui::EndTable();
@@ -103,7 +104,31 @@ void CalendarStage::Update(float deltaTime) {
     ImGui::EndChild();
 
 
+    float xPos = AndroidData::GetMonitorSize().x/2 - ImGui::CalcTextSize(std::to_string(m_LowerBound).c_str()).x/2;
 
+
+    ImGui::SetCursorPosX(xPos - ImGui::CalcTextSize(std::to_string(m_LowerBound).c_str()).x/2 - ImGui::GetFontSize());
+    if(ImGui::ArrowButton("##ArrowButtonForLastYear",ImGuiDir_Left)){
+        m_LowerBound--;
+    }
+
+    ImGui::SameLine();
+
+    ImGui::SetCursorPosX(xPos);
+
+    ImGui::Text("%s", std::to_string(m_LowerBound).c_str());
+
+    if(m_LowerBound != asap::now().year()) {
+
+        ImGui::SameLine();
+
+        ImGui::SetCursorPosX(xPos + ImGui::CalcTextSize(std::to_string(m_LowerBound).c_str()).x/2 + ImGui::GetFrameHeight() + ImGui::GetFontSize());
+        if(ImGui::ArrowButton("##ArrowButtonForNextYear",ImGuiDir_Right)){
+            m_LowerBound++;
+        }
+
+
+    }
 }
 
 std::string CalendarStage::GetMonthName(int month) {
@@ -137,5 +162,32 @@ std::string CalendarStage::GetMonthName(int month) {
 
 CalendarStage::~CalendarStage() {
     AndroidData::onFingerEvent().Disconnect(m_ConnectionID);
+}
+
+void CalendarStage::SetupInnerSquare(int year,int month,int day) {
+    ImVec2 cursorPos = ImGui::GetCursorPos();
+
+    ImVec2 size = ImVec2(ImGui::CalcTextSize("AA").x*1.5,ImGui::CalcTextSize("AA").y*1.5);
+
+    if(day == asap::now().mday() && month == asap::now().month() && year == asap::now().year()){
+        ImGui::PushStyleColor(ImGuiCol_Button,Color::Green.AsImVec4());
+        if(ImGui::Button(("##buttonForSelectionMonth" + std::to_string(month) + "Day" + std::to_string(day)).c_str(),size)){
+            InitialWindow::SetProgramStage<CurrentDayStage>();
+        }
+        ImGui::PopStyleColor();
+    }
+    else {
+        if(ImGui::Button(("##buttonForSelectionMonth" + std::to_string(month) + "Day" + std::to_string(day)).c_str(),size)){
+            InitialWindow::SetProgramStage<OlderDayStage>().onInit().Connect([=](){
+                InitialWindow::GetCurrentProgramStage().GetAs<OlderDayStage>()->SetDate(year,month,day);
+            });
+        }
+    }
+
+
+    ImGui::SetCursorPosX(cursorPos.x + size.x/2 - ImGui::CalcTextSize(std::to_string(day).c_str()).x/2);
+    ImGui::SetCursorPosY(cursorPos.y + size.y/2 - ImGui::CalcTextSize(std::to_string(day).c_str()).y/2);
+    ImGui::Text("%s",std::to_string(day).c_str());
+
 }
 

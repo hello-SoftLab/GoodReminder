@@ -39,6 +39,11 @@ void AndroidData::Init() {
             it++;
         }
 
+        SDL_GetDesktopDisplayMode(0,&m_DisplayProperties);
+
+        m_Dimensions.w = m_DisplayProperties.w;
+        m_Dimensions.h = m_DisplayProperties.h;
+
 
     }
 
@@ -95,10 +100,10 @@ bool AndroidData::InitializeWindow() {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     SDL_GetCurrentDisplayMode(0,&m_DisplayProperties);
-    SDL_GetDisplayBounds(0,&m_Dimensions);
+    SDL_GetDisplayUsableBounds(0,&m_Dimensions);
 
     TimedFunctionCall(5,[&](){
-        SDL_GetDisplayBounds(0,&m_Dimensions);
+        SDL_GetDisplayUsableBounds(0,&m_Dimensions);
     });
 
 
@@ -200,9 +205,7 @@ int AndroidData::EventFilter(void *userData, SDL_Event *event) {
                 m_ResizeEvent.EmitEvent(event->window.data1,event->window.data2);
             }
             break;
-        case SDL_WINDOWEVENT_DISPLAY_CHANGED:
-            SDL_GetDisplayBounds(0,&m_Dimensions);
-            break;
+
         case SDL_MULTIGESTURE:
             m_MultiGestureEvent.EmitEvent(event->mgesture);
             break;

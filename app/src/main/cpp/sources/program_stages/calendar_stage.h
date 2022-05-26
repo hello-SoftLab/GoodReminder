@@ -10,6 +10,7 @@ public:
 
 private:
     std::string GetMonthName(int month);
+    void SetupInnerSquare(int year,int month,int day);
 
 
     int m_CurrentYear;

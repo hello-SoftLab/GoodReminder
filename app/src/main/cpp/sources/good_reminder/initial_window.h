@@ -1,10 +1,27 @@
 #pragma once
 #include "../global.h"
+#include "../helpers/color.h"
 
 class ProgramStage {
 public:
     virtual void Init() {};
     virtual void Update(float deltaTime) {};
+};
+
+struct ProgramStageEvents {
+public:
+    ecspp::HelperClasses::FunctionSink<void()> onInit() {
+        return {onInitEvent};
+    }
+
+
+
+private:
+    std::function<void()> m_UpdatePropertiesFunc;
+    ecspp::HelperClasses::EventLauncher<void()> onInitEvent;
+
+    friend class InitialWindow;
+
 };
 
 struct InitialWindowProperties {
@@ -16,23 +33,34 @@ public:
 
     static void ClearProgramStage();
 
+    static Color GetBgColor();
+
     template<typename T>
-    static void SetProgramStage() {
-        m_UpdatePropertiesFunc = [&](){
+    static ProgramStageEvents& SetProgramStage() {
+        m_NextProgramStage.m_UpdatePropertiesFunc = [&](){
             if(!m_Properties.m_CurrentStage.template IsHoldingType<T>()) {
                 T &obj = m_Properties.m_CurrentStage.template HoldType<T>();
                 obj.Init();
+                m_NextProgramStage.onInitEvent.EmitEvent();
             }
         };
+        if(!m_Properties.m_CurrentStage.template IsHoldingType<T>()){
+            m_NextProgramStage.onInitEvent.Clear();
+        }
+        return m_NextProgramStage;
 
     };
+
+    static ecspp::HelperClasses::PointerHolder<ProgramStage> GetCurrentProgramStage();
+
     static void Update();
     static void Init();
     static ecspp::HelperClasses::FunctionSink<void()> OnAnimationFinish();
 
 
 private:
-    static inline std::function<void()> m_UpdatePropertiesFunc;
+    static inline Color m_BgColor = Color(255,221,166);
+    static inline ProgramStageEvents m_NextProgramStage;
     static inline ecspp::HelperClasses::EventLauncher<void()> m_OnAnimationFinish;
     static inline InitialWindowProperties m_Properties;
 

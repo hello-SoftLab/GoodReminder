@@ -215,6 +215,10 @@ add_library(goodreminder SHARED
 	${PROJECT_SOURCE_DIR}/sources/program_stages/calendar_stage.cpp
 
 	${ANDROID_NDK}/sources/android/native_app_glue/android_native_app_glue.c
+	${PROJECT_SOURCE_DIR}/sources/program_stages/current_day_stage.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/program_stages/older_day_stage.cpp
+
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp
