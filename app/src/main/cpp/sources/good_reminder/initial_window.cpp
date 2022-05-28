@@ -3,6 +3,7 @@
 #include "../android_data/android_data.h"
 #include "../app_manager/app_manager.h"
 #include "../program_stages/loading_stage.h"
+#include <fstream>
 
 void InitialWindow::Update() {
 
@@ -30,6 +31,29 @@ void InitialWindow::Init() {
 
     AppManager::SetClearColor(m_BgColor); //
     InitialWindow::SetProgramStage<LoadingStage>();
+
+    std::string dir = AndroidData::GetDataDir() + "/data_per_year.yaml";
+
+    if(std::filesystem::exists(dir)){
+        m_MainNode = YAML::LoadFile(dir);
+    }
+
+    AppLayout::onCleanup().Connect([dir](){
+        std::fstream stream;
+
+        stream.open(dir);
+
+        if(stream.is_open()){
+           stream << InitialWindow::m_MainNode;
+        }
+
+        stream.close();
+
+    });
+
+
+
+
 }
 
 ecspp::HelperClasses::FunctionSink<void()> InitialWindow::OnAnimationFinish() {
@@ -46,3 +70,36 @@ ecspp::HelperClasses::PointerHolder<ProgramStage> InitialWindow::GetCurrentProgr
 Color InitialWindow::GetBgColor() {
     return m_BgColor;
 }
+
+void InitialWindow::SaveStringToDate(int day, int month, int year, std::string data) {
+    m_MainNode[year][month][day].push_back(data);
+
+    std::stringstream myData;
+
+    myData << m_MainNode;
+
+    std::string myStr = myData.str();
+}
+
+std::vector<std::string> InitialWindow::GetSavedStringsByDate(int day, int month, int year) {
+    if(!m_MainNode[year]){
+        return {};
+    }
+    if(!m_MainNode[year][month]){
+        return {};
+    }
+    if(!m_MainNode[year][month][day]){
+        return {};
+    }
+
+    std::vector<std::string> data;
+
+    for(auto node : m_MainNode[year][month][day]){
+        if(node){
+            data.push_back(node.as<std::string>());
+        }
+    }
+    return data;
+}
+
+

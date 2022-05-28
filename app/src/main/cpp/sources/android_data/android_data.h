@@ -22,6 +22,7 @@ public:
 
     static void Init();
 
+
     static ecspp::HelperClasses::FunctionSink<void()> onDestroy();
     static ecspp::HelperClasses::FunctionSink<void()> onLowMemory();
     static ecspp::HelperClasses::FunctionSink<void()> onPause();
@@ -37,6 +38,7 @@ public:
     static void LoadImage(std::string name);
     static void SetImageToBeLoaded(std::string name,std::vector<unsigned char> data,int width,int height);
     static void SetDataDir(std::string name);
+    static std::string GetDataDir();
 
     static float GetKeyboardHeight();
     static ImVec2 GetMonitorSize();

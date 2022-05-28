@@ -172,7 +172,9 @@ void CalendarStage::SetupInnerSquare(int year,int month,int day) {
     if(day == asap::now().mday() && month == asap::now().month() && year == asap::now().year()){
         ImGui::PushStyleColor(ImGuiCol_Button,Color::Green.AsImVec4());
         if(ImGui::Button(("##buttonForSelectionMonth" + std::to_string(month) + "Day" + std::to_string(day)).c_str(),size)){
-            InitialWindow::SetProgramStage<CurrentDayStage>();
+            InitialWindow::SetProgramStage<CurrentDayStage>().onInit().Connect([=](){
+                InitialWindow::GetCurrentProgramStage().GetAs<CurrentDayStage>()->SetDate(year,month,day);
+            });
         }
         ImGui::PopStyleColor();
     }

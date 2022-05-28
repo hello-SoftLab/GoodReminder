@@ -125,11 +125,32 @@ void CurrentDayStage::Update(float deltaTime) {
 
 
     ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/2 - ImGui::CalcTextSize("Remind me").x/2);
-    ImGui::Button("Remind me");
+
+    if(ImGui::Button("Remind me")){
+
+        auto it = m_NewlineLocations.rbegin();
+        while(it != m_NewlineLocations.rend()){
+            m_Data.erase(m_Data.begin() + *it);
+            it++;
+        }
+
+        InitialWindow::SaveStringToDate(m_Day,m_Month,m_Year,m_Data);
+
+
+
+        InitialWindow::SetProgramStage<CalendarStage>();
+    }
 
 
 }
 
 std::vector<int> &CurrentDayStage::GetNewlineLocations() {
     return m_NewlineLocations;
+}
+
+void CurrentDayStage::SetDate(int year, int month, int day) {
+
+    m_Day = day;
+    m_Month = month;
+    m_Year = year;
 }

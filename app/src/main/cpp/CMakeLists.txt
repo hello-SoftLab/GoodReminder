@@ -168,6 +168,26 @@ project("app_project")
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES stb_project)
 
 
+#repository download and settings for alias yaml...
+
+
+	#adding options
+
+	set(YAML_BUILD_TESTS OFF CACHE INTERNAL "")
+
+	FetchContent_Declare(yaml_project
+
+		GIT_REPOSITORY https://github.com/jbeder/yaml-cpp
+
+		GIT_TAG yaml-cpp-0.7.0
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/yaml
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES yaml_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
@@ -257,6 +277,8 @@ target_link_libraries(goodreminder PUBLIC ecspp)
 
 target_link_libraries(goodreminder PUBLIC asap)
 
+target_link_libraries(goodreminder PUBLIC yaml-cpp)
+
 
 #adding includes...
 
@@ -280,3 +302,5 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/ecsp
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/datetime/include)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/yaml/include)

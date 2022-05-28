@@ -10,6 +10,8 @@ public:
     static void SetClearColor(Color color);
     static float DeltaTime();
 
+
+
 private:
 
     static inline ecspp::HelperClasses::EventLauncher<void()> m_DrawingFunctions;

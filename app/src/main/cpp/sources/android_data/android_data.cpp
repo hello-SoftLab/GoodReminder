@@ -317,6 +317,10 @@ void AndroidData::SetDataDir(std::string name) {
     m_DataDir = name;
 }
 
+std::string AndroidData::GetDataDir() {
+    return m_DataDir;
+}
+
 
 
 

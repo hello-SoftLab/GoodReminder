@@ -7,8 +7,10 @@ public:
     void Update(float deltaTime) override;
 
     std::vector<int>& GetNewlineLocations();
+    void SetDate(int year,int month,int day);
 
 private:
+    int m_Year,m_Month,m_Day;
     std::string m_Data;
     std::vector<int> m_NewlineLocations;
 

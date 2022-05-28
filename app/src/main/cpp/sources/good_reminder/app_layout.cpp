@@ -10,7 +10,20 @@ void AppLayout::Init() {
         InitialWindow::Update();
     });
 
+    AndroidData::onDestroy().Connect([&](){
+        m_CleanupEvent.EmitEvent();
+    });
+
+    AndroidData::onPause().Connect([&](){
+        m_CleanupEvent.EmitEvent();
+    });
 
 
 
 }
+
+ecspp::HelperClasses::FunctionSink<void()> AppLayout::onCleanup() {
+    return {m_CleanupEvent};
+}
+
+

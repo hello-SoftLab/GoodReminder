@@ -11,5 +11,6 @@ public:
 
 private:
     int m_Year,m_Month,m_Day;
+    std::vector<std::string> m_Data;
 
 };

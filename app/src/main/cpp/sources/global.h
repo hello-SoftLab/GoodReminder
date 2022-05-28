@@ -9,6 +9,7 @@
 #include "android/obb.h"
 #include "fmt/format.h"
 #include "../vendor/datetime/include/asap/datetime.h"
+#include "../vendor/yaml/include/yaml-cpp/yaml.h"
 #include <jni.h>
 #include <iostream>
 #include "jni.h"
