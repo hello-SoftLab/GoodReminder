@@ -313,6 +313,10 @@ void AndroidData::TimedFunctionCall(float delay, std::function<void()> func) {
     m_DelayedFunctions.push_back(prop);
 }
 
+void AndroidData::SetDataDir(std::string name) {
+    m_DataDir = name;
+}
+
 
 
 

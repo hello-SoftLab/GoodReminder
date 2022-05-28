@@ -36,7 +36,7 @@ public:
 
     static void LoadImage(std::string name);
     static void SetImageToBeLoaded(std::string name,std::vector<unsigned char> data,int width,int height);
-
+    static void SetDataDir(std::string name);
 
     static float GetKeyboardHeight();
     static ImVec2 GetMonitorSize();
@@ -66,7 +66,7 @@ private:
     static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterBgEvent;
     static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterFgEvent;
 
-
+    static inline std::string m_DataDir;
     static inline std::vector<DelayedFunctionStructure> m_DelayedFunctions;
     static inline SDL_Rect m_Dimensions;
     static inline ImVec2 m_DragDelta;

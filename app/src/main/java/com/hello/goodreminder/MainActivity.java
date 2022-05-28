@@ -1,4 +1,4 @@
-package knz.goodreminder;
+package com.hello.goodreminder;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +34,9 @@ public class MainActivity extends SDLActivity {
         catch(IOException e){
             System.out.println(e.getMessage());
         }
+
+        SetSavingDirectory(getDataDir().getPath().getBytes());
+
         return new String[]{
                 "SDL2",
                 "goodreminder"
@@ -83,7 +86,7 @@ public class MainActivity extends SDLActivity {
     }
 
 
-
+    public native void SetSavingDirectory(byte[] path);
     public native void LoadImage(byte[] name,byte[] bytes,int width,int height);
 
 }

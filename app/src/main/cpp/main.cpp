@@ -28,12 +28,30 @@ void android_main(struct android_app* app) {
 };
 
 
-
 extern "C"
 JNIEXPORT void JNICALL
-Java_knz_goodreminder_MainActivity_LoadImage(JNIEnv *env, jobject thiz, jbyteArray name,
-                                             jbyteArray bytes, jint width, jint height) {
+Java_com_hello_goodreminder_MainActivity_SetSavingDirectory(JNIEnv *env, jobject thiz,
+                                                            jbyteArray path) {
+    std::string data = "";
 
+    int numBytes = env->GetArrayLength(path);
+
+    jbyte* byte = env->GetByteArrayElements(path,nullptr);
+
+    if(!byte){
+        return;
+    }
+
+    for(int i = 0;i<numBytes;i++){
+        data += byte[i];
+    }
+
+    AndroidData::SetDataDir(data);
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hello_goodreminder_MainActivity_LoadImage(JNIEnv *env, jobject thiz, jbyteArray name,
+                                                   jbyteArray bytes, jint width, jint height) {
     std::string nameStr = "";
 
     int nameLen = env->GetArrayLength(name);
