@@ -35,7 +35,7 @@ public class MainActivity extends SDLActivity {
             System.out.println(e.getMessage());
         }
 
-        SetSavingDirectory(getDataDir().getPath().getBytes());
+        SetSavingDirectory(getFilesDir().getPath().getBytes());
 
         return new String[]{
                 "SDL2",

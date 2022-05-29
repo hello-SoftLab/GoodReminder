@@ -62,6 +62,9 @@ public:
 
 
 private:
+
+    static void SaveToFile();
+
     static inline YAML::Node m_MainNode;
     static inline Color m_BgColor = Color(255,221,166);
     static inline ProgramStageEvents m_NextProgramStage;

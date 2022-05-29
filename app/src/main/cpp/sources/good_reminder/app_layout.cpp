@@ -14,11 +14,6 @@ void AppLayout::Init() {
         m_CleanupEvent.EmitEvent();
     });
 
-    AndroidData::onPause().Connect([&](){
-        m_CleanupEvent.EmitEvent();
-    });
-
-
 
 }
 

@@ -1,6 +1,7 @@
 #include "current_day_stage.h"
 #include "../android_data/android_data.h"
 #include "calendar_stage.h"
+#include "older_day_stage.h"
 
 void CurrentDayStage::Init() {
     m_Data = "Click here to write!";
@@ -121,6 +122,18 @@ void CurrentDayStage::Update(float deltaTime) {
     },nullptr);
     ImGui::PopStyleColor();
 
+    if(m_ShouldSetFocusOnText){
+        ImGui::SetKeyboardFocusHere(-1);
+        m_ShouldSetFocusOnText = false;
+    }
+
+    if(ImGui::IsItemActive() && m_ShouldClearBuffer){
+        m_Data = "";
+        ImGui::ClearActiveID();
+        m_ShouldClearBuffer = false;
+        m_ShouldSetFocusOnText = true;
+    }
+
 
 
 
@@ -141,6 +154,16 @@ void CurrentDayStage::Update(float deltaTime) {
         InitialWindow::SetProgramStage<CalendarStage>();
     }
 
+#ifndef NDEBUG
+    ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/2 - ImGui::CalcTextSize("Test Day Output").x/2);
+
+    if(ImGui::Button("Test Day Output")){
+        InitialWindow::SetProgramStage<OlderDayStage>().onInit().Connect([&]() {
+            InitialWindow::GetCurrentProgramStage().GetAs<OlderDayStage>()->SetDate(m_Year, m_Month,
+                                                                                    m_Day);
+        });
+    }
+#endif
 
 }
 

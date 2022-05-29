@@ -3,61 +3,8 @@
 
 
 void AndroidData::Init() {
-    if(SDL_Init(SDL_INIT_VIDEO) != 0){
-        return;
-    }
 
-    if(!InitializeWindow()){
-        return;
-    }
-
-    if(!InitializeContext()){
-        return;
-    }
-
-    if(!InitializeImGui()){
-        return;
-    }
-
-
-
-    while(AppManager::HandleFrameUpdate()){
-        m_DragDelta = ImVec2(0,0);
-
-        auto it = m_DelayedFunctions.begin();
-        while(it != m_DelayedFunctions.end()){
-
-            if(it->currentTimer > it -> maxTime){
-                it->m_Function();
-                it = m_DelayedFunctions.erase(it);
-                continue;
-            }
-
-            it->currentTimer += AppManager::DeltaTime();
-
-
-            it++;
-        }
-
-        SDL_GetDesktopDisplayMode(0,&m_DisplayProperties);
-
-        m_Dimensions.w = m_DisplayProperties.w;
-        m_Dimensions.h = m_DisplayProperties.h;
-
-
-    }
-
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();
-
-    SDL_GL_DeleteContext(m_Context);
-    // Close and destroy the window
-    SDL_DestroyWindow(m_WindowPointer);
-
-    // Clean up
-    SDL_Quit();
-
+    Initialization();
 
 }
 
@@ -319,6 +266,67 @@ void AndroidData::SetDataDir(std::string name) {
 
 std::string AndroidData::GetDataDir() {
     return m_DataDir;
+}
+
+void AndroidData::Initialization() {
+    if(SDL_Init(SDL_INIT_VIDEO) != 0){
+        return;
+    }
+
+    if(!InitializeWindow()){
+        return;
+    }
+
+    if(!InitializeContext()){
+        return;
+    }
+
+    if(!InitializeImGui()){
+        return;
+    }
+
+
+
+    while(AppManager::HandleFrameUpdate() && m_IsRunning){
+        m_DragDelta = ImVec2(0,0);
+
+        auto it = m_DelayedFunctions.begin();
+        while(it != m_DelayedFunctions.end()){
+
+            if(it->currentTimer > it -> maxTime){
+                it->m_Function();
+                it = m_DelayedFunctions.erase(it);
+                continue;
+            }
+
+            it->currentTimer += AppManager::DeltaTime();
+
+
+            it++;
+        }
+
+        SDL_GetDesktopDisplayMode(0,&m_DisplayProperties);
+
+        m_Dimensions.w = m_DisplayProperties.w;
+        m_Dimensions.h = m_DisplayProperties.h;
+
+
+    }
+
+    Cleanup();
+}
+
+void AndroidData::Cleanup() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplSDL2_Shutdown();
+    ImGui::DestroyContext();
+
+    SDL_GL_DeleteContext(m_Context);
+    // Close and destroy the window
+    SDL_DestroyWindow(m_WindowPointer);
+
+    // Clean up
+    SDL_Quit();
 }
 
 

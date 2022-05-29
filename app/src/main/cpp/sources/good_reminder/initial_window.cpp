@@ -38,18 +38,9 @@ void InitialWindow::Init() {
         m_MainNode = YAML::LoadFile(dir);
     }
 
-    AppLayout::onCleanup().Connect([dir](){
-        std::fstream stream;
 
-        stream.open(dir);
 
-        if(stream.is_open()){
-           stream << InitialWindow::m_MainNode;
-        }
-
-        stream.close();
-
-    });
+    AndroidData::onPause().Connect(&SaveToFile);
 
 
 
@@ -74,11 +65,7 @@ Color InitialWindow::GetBgColor() {
 void InitialWindow::SaveStringToDate(int day, int month, int year, std::string data) {
     m_MainNode[year][month][day].push_back(data);
 
-    std::stringstream myData;
-
-    myData << m_MainNode;
-
-    std::string myStr = myData.str();
+    SaveToFile();
 }
 
 std::vector<std::string> InitialWindow::GetSavedStringsByDate(int day, int month, int year) {
@@ -100,6 +87,24 @@ std::vector<std::string> InitialWindow::GetSavedStringsByDate(int day, int month
         }
     }
     return data;
+}
+
+void InitialWindow::SaveToFile() {
+    std::string dir = AndroidData::GetDataDir() + "/data_per_year.yaml";
+
+    if(!std::filesystem::exists(AndroidData::GetDataDir())){
+        std::filesystem::create_directory(AndroidData::GetDataDir());
+    }
+
+    std::ofstream stream;
+
+    stream.open(dir);
+
+    if(stream.is_open()){
+        stream << InitialWindow::m_MainNode;
+    }
+
+    stream.close();
 }
 
 

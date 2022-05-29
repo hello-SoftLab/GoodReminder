@@ -21,7 +21,8 @@ class AndroidData {
 public:
 
     static void Init();
-
+    static void Initialization();
+    static void Cleanup();
 
     static ecspp::HelperClasses::FunctionSink<void()> onDestroy();
     static ecspp::HelperClasses::FunctionSink<void()> onLowMemory();
@@ -59,7 +60,7 @@ private:
 
     static void ShutDown();
 
-
+    static inline bool m_IsRunning = true;
     static inline ecspp::HelperClasses::EventLauncher<void(SDL_Event*)> m_FingerDownEvent;
     static inline ecspp::HelperClasses::EventLauncher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
     static inline ecspp::HelperClasses::EventLauncher<void(int,int)> m_ResizeEvent;
