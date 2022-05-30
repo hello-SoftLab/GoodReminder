@@ -1,5 +1,11 @@
+<p align="center">
+  <img 
+    width=""
+    height=""
+    src="https://user-images.githubusercontent.com/105679100/170915206-c4b25757-6135-4943-94bd-21164dc84d91.png"
+  >
+</p>
 
-![logo-READMEOFFRED](https://user-images.githubusercontent.com/86024524/169919489-43516bfe-221f-4103-893b-8018ab7bb54d.png)
 
 
 # GoodReminder
