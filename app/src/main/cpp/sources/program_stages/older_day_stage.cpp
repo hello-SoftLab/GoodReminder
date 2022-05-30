@@ -43,7 +43,7 @@ void OlderDayStage::Update(float deltaTime) {
             ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x / 7);
             ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize,2);
             ImGui::PushStyleColor(ImGuiCol_Border,Color::White.AsImVec4());
-            ImGui::BeginChild(("##olderDayChild" + ecspp::HelperFunctions::GenerateStringHash(&text)).c_str(),ImVec2(5*AndroidData::GetMonitorSize().x/7,(1.5f + (int)ImGui::CalcTextSize(text.c_str()).x/(int)(5*AndroidData::GetMonitorSize().x/7)) * ImGui::CalcTextSize("A").y),true,ImGuiWindowFlags_AlwaysAutoResize);
+            ImGui::BeginChild(("##olderDayChild" + ecspp::HelperFunctions::GenerateStringHash(&text)).c_str(),ImVec2(InitialWindow::GetMiddleWidgetSizeX(),(CalculateNumberOfLines(text) + 1.5f)* ImGui::CalcTextSize("A").y),true,ImGuiWindowFlags_AlwaysAutoResize);
             ImGui::PopStyleVar();
             ImGui::PopStyleColor();
 
@@ -72,4 +72,21 @@ void OlderDayStage::SetDate(int year, int month, int day) {
     m_Month = month;
     m_Year = year;
     m_Day = day;
+}
+
+int OlderDayStage::CalculateNumberOfLines(std::string text) {
+    bool finished = false;
+    int lines = 0;
+    while(!finished){
+        if(auto pos = text.find('\n');pos != std::string::npos){
+            lines += floor(ImGui::CalcTextSize(text.substr(0,pos).c_str()).x/InitialWindow::GetMiddleWidgetSizeX());
+            lines += 1;
+            text.erase(0,pos+1);
+        }
+        else {
+            lines += floor(ImGui::CalcTextSize(text.substr(0,pos).c_str()).x/InitialWindow::GetMiddleWidgetSizeX());
+            finished = true;
+        }
+    }
+    return lines;
 }

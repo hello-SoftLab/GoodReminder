@@ -24,11 +24,11 @@ void CurrentDayStage::Update(float deltaTime) {
 
     ImGui::InvisibleButton("###",ImVec2(ImGui::GetFrameHeight(),ImGui::GetFrameHeight()));
 
-    ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/7);
+    ImGui::SetCursorPosX(InitialWindow::GetMiddleWidgetCursorOffsetX());
 
 
     ImGui::PushStyleColor(ImGuiCol_FrameBg,InitialWindow::GetBgColor().AsImVec4());
-    ImGui::InputTextMultiline("##TextForCurrentDay",&m_Data,ImVec2(5*AndroidData::GetMonitorSize().x/7,0),ImGuiInputTextFlags_CallbackAlways,[](ImGuiInputTextCallbackData* data){
+    ImGui::InputTextMultiline("##TextForCurrentDay",&m_Data,ImVec2(InitialWindow::GetMiddleWidgetSizeX(),0),ImGuiInputTextFlags_CallbackAlways,[](ImGuiInputTextCallbackData* data){
         if(data->BufTextLen != 0) {
             if(data->EventKey != ImGuiKey_Backspace) {
 
@@ -63,14 +63,14 @@ void CurrentDayStage::Update(float deltaTime) {
                 while(!done){
 
                     if(auto pos = myStr.find('\n',current);pos != std::string::npos) {
-                        if (ImGui::CalcTextSize(myStr.substr(current,pos-current).c_str()).x < 5*AndroidData::GetMonitorSize().x/7){
+                        if (ImGui::CalcTextSize(myStr.substr(current,pos-current).c_str()).x < InitialWindow::GetMiddleWidgetSizeX()){
                             current = pos + 1;
                             continue;
                         }
                         else {
                             int position = current + 1;
                             std::string substring = myStr.substr(current,position-current);
-                            while(ImGui::CalcTextSize(substring.c_str()).x < 5*AndroidData::GetMonitorSize().x/7){
+                            while(ImGui::CalcTextSize(substring.c_str()).x < InitialWindow::GetMiddleWidgetSizeX()){
                                 position += 1;
                                 substring = myStr.substr(current,position-current);
                             }
@@ -82,13 +82,13 @@ void CurrentDayStage::Update(float deltaTime) {
                         }
                     }
                     else {
-                        if (ImGui::CalcTextSize(myStr.substr(current,pos-current).c_str()).x < 5*AndroidData::GetMonitorSize().x/7){
+                        if (ImGui::CalcTextSize(myStr.substr(current,pos-current).c_str()).x < InitialWindow::GetMiddleWidgetSizeX()){
                             done = true;
                         }
                         else {
                             int position = current + 1;
                             std::string substring = myStr.substr(current,position-current);
-                            while(ImGui::CalcTextSize(substring.c_str()).x < 5*AndroidData::GetMonitorSize().x/7){
+                            while(ImGui::CalcTextSize(substring.c_str()).x < InitialWindow::GetMiddleWidgetSizeX()){
                                 position += 1;
                                 substring = myStr.substr(current,position-current);
                             }

@@ -60,9 +60,10 @@ public:
     static void SaveStringToDate(int day,int month,int year,std::string data);
     static std::vector<std::string> GetSavedStringsByDate(int day,int month,int year);
 
+    static float GetMiddleWidgetSizeX();
+    static float GetMiddleWidgetCursorOffsetX();
 
 private:
-
     static void SaveToFile();
 
     static inline YAML::Node m_MainNode;

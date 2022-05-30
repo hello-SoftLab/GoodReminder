@@ -107,4 +107,12 @@ void InitialWindow::SaveToFile() {
     stream.close();
 }
 
+float InitialWindow::GetMiddleWidgetSizeX() {
+    return 5*AndroidData::GetMonitorSize().x/7;
+}
+
+float InitialWindow::GetMiddleWidgetCursorOffsetX() {
+    return AndroidData::GetMonitorSize().x/7;
+}
+
 

@@ -25,13 +25,13 @@ void CalendarStage::Update(float deltaTime) {
     using namespace asap::literals;
 
 
-    ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/7);
+    ImGui::SetCursorPosX(InitialWindow::GetMiddleWidgetCursorOffsetX());
     ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/6);
 
     ImGui::SetWindowFontScale(3);
 
     ImGui::PushStyleColor(ImGuiCol_ChildBg,Color::White.AsImVec4());
-    ImGui::BeginChild("CalendarChild",ImVec2(5*AndroidData::GetMonitorSize().x/7,4*AndroidData::GetMonitorSize().y/6),true,ImGuiWindowFlags_NoScrollbar);
+    ImGui::BeginChild("CalendarChild",ImVec2(InitialWindow::GetMiddleWidgetSizeX(),4*AndroidData::GetMonitorSize().y/6),true,ImGuiWindowFlags_NoScrollbar);
     ImGui::PopStyleColor();
 
     auto endDate = asap::datetime(m_LowerBound,0,1) + 1_year - 1_day;

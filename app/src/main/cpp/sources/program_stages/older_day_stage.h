@@ -10,6 +10,8 @@ public:
     void SetDate(int year,int month,int day);
 
 private:
+    int CalculateNumberOfLines(std::string text);
+
     int m_Year,m_Month,m_Day;
     std::vector<std::string> m_Data;
 

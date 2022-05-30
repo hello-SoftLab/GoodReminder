@@ -6,7 +6,6 @@ Scrollable::Scrollable() {
             m_ScrollAccel = event->tfinger.dy*AndroidData::GetMonitorSize().y;
             m_ShouldScroll = true;
         }
-
     });
 }
 
