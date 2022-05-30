@@ -1,5 +1,11 @@
+<p align="center">
+  <img 
+    width=""
+    height=""
+    src="https://user-images.githubusercontent.com/105679100/170915206-c4b25757-6135-4943-94bd-21164dc84d91.png"
+  >
+</p>
 
-![logo-READMEOFFRED](https://user-images.githubusercontent.com/86024524/169919489-43516bfe-221f-4103-893b-8018ab7bb54d.png)
 
 
 # GoodReminder
@@ -26,6 +32,7 @@ All of the info below has its own folder in this repository, don't forget to che
 	* Discussing the ideia and possible outcomes for the app;
 + **20.05.2022** - First tests of simple android apps;
 + **23.05.2022** - Documentation, UI design and visual design;
++ **30.05.2022** - Logo redesign, more testing and in-app transitions change;
 + *under construction!*
 
 
