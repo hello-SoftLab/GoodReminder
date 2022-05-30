@@ -32,6 +32,7 @@ All of the info below has its own folder in this repository, don't forget to che
 	* Discussing the ideia and possible outcomes for the app;
 + **20.05.2022** - First tests of simple android apps;
 + **23.05.2022** - Documentation, UI design and visual design;
++ **30.05.2022** - Logo redesign, more testing and in-app transitions change;
 + *under construction!*
 
 
