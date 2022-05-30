@@ -12,16 +12,7 @@ void CalendarStage::Init() {
     m_LowerBound = asap::now().year();
     m_UpperBound = m_LowerBound + 1;
 
-    m_ConnectionID = AndroidData::onFingerEvent().Connect([&](SDL_Event* event){
-        if(event->tfinger.type == SDL_FINGERMOTION){
-            m_ScrollAccel = event->tfinger.dy*AndroidData::GetMonitorSize().y;
-            m_ShouldScroll = true;
 
-
-        }
-
-
-    });
 
 
 
@@ -82,23 +73,7 @@ void CalendarStage::Update(float deltaTime) {
         }
     }
 
-    if(m_ShouldScroll){
-        ImGui::SetScrollY(ImGui::GetScrollY() - m_ScrollAccel);
-
-        if(m_ScrollAccel > 0) {
-            m_ScrollAccel -= m_ScrollFriction * AppManager::DeltaTime();
-        }
-        if(m_ScrollAccel < 0) {
-            m_ScrollAccel += m_ScrollFriction * AppManager::DeltaTime();
-        }
-
-        if(abs(m_ScrollAccel) < 1){
-            m_ShouldScroll = false;
-        }
-        if(ImGui::GetScrollY() == ImGui::GetScrollMaxY()){
-            m_ShouldScroll = false;
-        }
-    }
+    HandleScroll();
 
 
     ImGui::EndChild();
@@ -161,7 +136,6 @@ std::string CalendarStage::GetMonthName(int month) {
 }
 
 CalendarStage::~CalendarStage() {
-    AndroidData::onFingerEvent().Disconnect(m_ConnectionID);
 }
 
 void CalendarStage::SetupInnerSquare(int year,int month,int day) {

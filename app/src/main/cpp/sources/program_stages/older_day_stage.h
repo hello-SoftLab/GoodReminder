@@ -1,9 +1,9 @@
 #pragma once
 #include "../good_reminder/initial_window.h"
+#include "scrollable.h"
 
 
-
-class OlderDayStage : public ProgramStage {
+class OlderDayStage : public ProgramStage, public Scrollable {
 public:
     void Init() override;
     void Update(float deltaTime) override;

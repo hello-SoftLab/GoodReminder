@@ -239,6 +239,10 @@ add_library(goodreminder SHARED
 
 	${PROJECT_SOURCE_DIR}/sources/program_stages/older_day_stage.cpp
 
+	${PROJECT_SOURCE_DIR}/sources/program_stages/thank_you_stage.cpp
+
+	${PROJECT_SOURCE_DIR}/sources/program_stages/scrollable.cpp
+
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui.cpp
 
 	${PROJECT_SOURCE_DIR}/vendor/imgui/imgui_tables.cpp

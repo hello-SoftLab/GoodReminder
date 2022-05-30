@@ -152,19 +152,6 @@ int AndroidData::EventFilter(void *userData, SDL_Event *event) {
                 m_ResizeEvent.EmitEvent(event->window.data1,event->window.data2);
             }
             break;
-
-        case SDL_MULTIGESTURE:
-            m_MultiGestureEvent.EmitEvent(event->mgesture);
-            break;
-        case SDL_FINGERDOWN:
-            m_FingerDownEvent.EmitEvent(event);
-            break;
-        case SDL_FINGERUP:
-            m_FingerDownEvent.EmitEvent(event);
-            break;
-        case SDL_FINGERMOTION:
-            m_FingerDownEvent.EmitEvent(event);
-            break;
     }
 
 
@@ -288,6 +275,36 @@ void AndroidData::Initialization() {
 
 
     while(AppManager::HandleFrameUpdate() && m_IsRunning){
+
+        SDL_Event event;
+        while(SDL_PollEvent(&event)){
+            ImGui_ImplSDL2_ProcessEvent(&event);
+            switch(event.type){
+                case SDL_QUIT:
+                    m_IsRunning = false;
+                    break;
+                case SDL_WINDOWEVENT:
+                    if(event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(AndroidData::CurrentWindow())){
+                        m_IsRunning = false;
+                        break;
+                    }
+                    break;
+                case SDL_MULTIGESTURE:
+                    m_MultiGestureEvent.EmitEvent(event.mgesture);
+                    break;
+                case SDL_FINGERDOWN:
+                    m_FingerDownEvent.EmitEvent(&event);
+                    break;
+                case SDL_FINGERUP:
+                    m_FingerDownEvent.EmitEvent(&event);
+                    break;
+                case SDL_FINGERMOTION:
+                    m_FingerDownEvent.EmitEvent(&event);
+                    break;
+
+            }
+        }
+
         m_DragDelta = ImVec2(0,0);
 
         auto it = m_DelayedFunctions.begin();

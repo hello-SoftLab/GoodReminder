@@ -72,21 +72,7 @@ void AppManager::EndFrame() {
 }
 
 bool AppManager::HandleFrameUpdate() {
-    SDL_Event event;
 
-
-    while(SDL_PollEvent(&event)){
-        ImGui_ImplSDL2_ProcessEvent(&event);
-        switch(event.type){
-            case SDL_QUIT:
-                return false;
-            case SDL_WINDOWEVENT:
-                if(event.window.event == SDL_WINDOWEVENT_CLOSE && event.window.windowID == SDL_GetWindowID(AndroidData::CurrentWindow())){
-                    return false;
-                }
-                break;
-        }
-    }
     static ImVec2 oldMousePos;
 
     m_MouseDelta.x = ImGui::GetMousePos().x - oldMousePos.x;

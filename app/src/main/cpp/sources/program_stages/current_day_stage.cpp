@@ -2,6 +2,7 @@
 #include "../android_data/android_data.h"
 #include "calendar_stage.h"
 #include "older_day_stage.h"
+#include "thank_you_stage.h"
 
 void CurrentDayStage::Init() {
     m_Data = "Click here to write!";
@@ -120,6 +121,9 @@ void CurrentDayStage::Update(float deltaTime) {
 
         return 0;
     },nullptr);
+    ImGui::BeginChild("##TextForCurrentDay");
+    HandleScroll();
+    ImGui::EndChild();
     ImGui::PopStyleColor();
 
     if(m_ShouldSetFocusOnText){
@@ -151,7 +155,7 @@ void CurrentDayStage::Update(float deltaTime) {
 
 
 
-        InitialWindow::SetProgramStage<CalendarStage>();
+        InitialWindow::SetProgramStage<ThankYouStage>();
     }
 
 #ifndef NDEBUG

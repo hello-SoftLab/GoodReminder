@@ -1,8 +1,9 @@
 #pragma once
 #include "../good_reminder/initial_window.h"
 #include "../opengl_wrappers/texture.h"
+#include "scrollable.h"
 
-class CalendarStage : public ProgramStage {
+class CalendarStage : public ProgramStage, public Scrollable {
 public:
     void Init() override;
     void Update(float deltaTime) override;
@@ -15,11 +16,7 @@ private:
 
     int m_CurrentYear;
     int m_LowerBound,m_UpperBound;
-    bool m_ShouldScroll = false;
-    float m_ScrollValue = 0;
-    float m_ScrollFriction = 40;
-    float m_ScrollAccel;
-    size_t m_ConnectionID = 0;
+
 
 
 };
