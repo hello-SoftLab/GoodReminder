@@ -6,7 +6,7 @@
 class AppManager {
 public:
 
-    static ecspp::HelperClasses::FunctionSink<void()> Drawing();
+    static yael::event_sink<void()> Drawing();
     static void SetClearColor(Color color);
     static float DeltaTime();
 
@@ -14,7 +14,7 @@ public:
 
 private:
 
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_DrawingFunctions;
+    static inline yael::event_launcher<void()> m_DrawingFunctions;
     static inline Color m_ClearColor = Color::White;
     static inline float m_DeltaTime = 0;
     static inline ImVec2 m_MouseDelta;

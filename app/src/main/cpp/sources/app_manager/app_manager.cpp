@@ -47,10 +47,11 @@ void AppManager::Draw() {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,10);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize,2);
 
         m_DrawingFunctions.EmitEvent();
 
-        ImGui::PopStyleVar(3);
+        ImGui::PopStyleVar(4);
 
 
     }
@@ -90,7 +91,7 @@ bool AppManager::HandleFrameUpdate() {
 
 }
 
-ecspp::HelperClasses::FunctionSink<void()> AppManager::Drawing() {
+yael::event_sink<void()> AppManager::Drawing() {
     return {m_DrawingFunctions};
 }
 

@@ -16,7 +16,7 @@ private:
 
     int m_CurrentYear;
     int m_LowerBound,m_UpperBound;
-
+    bool hasInit = false;
 
 
 };

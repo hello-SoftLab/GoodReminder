@@ -3,6 +3,7 @@
 #include "../helpers/color.h"
 #include "app_layout.h"
 
+
 class ProgramStage {
 public:
     virtual void Init() {};
@@ -11,7 +12,7 @@ public:
 
 struct ProgramStageEvents {
 public:
-    ecspp::HelperClasses::FunctionSink<void()> onInit() {
+    yael::event_sink<void()> onInit() {
         return {onInitEvent};
     }
 
@@ -19,7 +20,7 @@ public:
 
 private:
     std::function<void()> m_UpdatePropertiesFunc;
-    ecspp::HelperClasses::EventLauncher<void()> onInitEvent;
+    yael::event_launcher<void()> onInitEvent;
 
     friend class InitialWindow;
 
@@ -55,21 +56,25 @@ public:
 
     static void Update();
     static void Init();
-    static ecspp::HelperClasses::FunctionSink<void()> OnAnimationFinish();
+    static yael::event_sink<void()> OnAnimationFinish();
 
     static void SaveStringToDate(int day,int month,int year,std::string data);
     static std::vector<std::string> GetSavedStringsByDate(int day,int month,int year);
 
     static float GetMiddleWidgetSizeX();
     static float GetMiddleWidgetCursorOffsetX();
+    static ImFont* GetFont(std::string name);
+    static void LoadFont(std::string name,std::vector<unsigned char> data);
 
 private:
     static void SaveToFile();
 
+    static inline std::unordered_map<std::string,ImFont*> m_LoadedFonts;
+    static inline std::unordered_map<std::string,std::vector<unsigned char>> m_UnloadedFonts;
     static inline YAML::Node m_MainNode;
     static inline Color m_BgColor = Color(255,221,166);
     static inline ProgramStageEvents m_NextProgramStage;
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_OnAnimationFinish;
+    static inline yael::event_launcher<void()> m_OnAnimationFinish;
     static inline InitialWindowProperties m_Properties;
 
 };

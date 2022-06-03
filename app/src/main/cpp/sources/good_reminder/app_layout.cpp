@@ -17,7 +17,7 @@ void AppLayout::Init() {
 
 }
 
-ecspp::HelperClasses::FunctionSink<void()> AppLayout::onCleanup() {
+yael::event_sink<void()> AppLayout::onCleanup() {
     return {m_CleanupEvent};
 }
 

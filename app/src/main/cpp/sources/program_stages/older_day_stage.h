@@ -3,7 +3,7 @@
 #include "scrollable.h"
 
 
-class OlderDayStage : public ProgramStage, public Scrollable {
+class OlderDayStage : public ProgramStage, public Scrollable,public yael::event_receiver {
 public:
     void Init() override;
     void Update(float deltaTime) override;
@@ -11,7 +11,7 @@ public:
 
 private:
     int CalculateNumberOfLines(std::string text);
-
+    Texture<Type2D> m_ArrowTex;
     int m_Year,m_Month,m_Day;
     std::vector<std::string> m_Data;
 

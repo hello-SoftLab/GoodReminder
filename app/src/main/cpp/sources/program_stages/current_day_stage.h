@@ -2,7 +2,7 @@
 #include "../good_reminder/initial_window.h"
 #include "scrollable.h"
 
-class CurrentDayStage : public ProgramStage, public Scrollable {
+class CurrentDayStage : public ProgramStage, public Scrollable, public yael::event_receiver {
 public:
     void Init() override;
     void Update(float deltaTime) override;
@@ -11,6 +11,7 @@ public:
     void SetDate(int year,int month,int day);
 
 private:
+    Texture<Type2D> m_ArrowTex;
     bool m_ShouldSetFocusOnText = false;
     bool m_ShouldClearBuffer = true;
     int m_Year,m_Month,m_Day;

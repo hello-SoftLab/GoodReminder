@@ -4,19 +4,16 @@
 #include "good_reminder/app_layout.h"
 #include "good_reminder/data_structures.h"
 #include "android_native_app_glue.h"
+#include "good_reminder/initial_window.h"
 
-static bool firstLoop = true;
+
 
 int SDL_main(int /*argc*/, char* /*argv*/[]) {
 
 
 
-    AppObject obj = AppObject::CreateNew("Hey");
 
-    if(firstLoop) {
-        AppLayout::Init();
-        firstLoop = false;
-    }
+
 
     AndroidData::Init();
     return 0;
@@ -83,5 +80,40 @@ Java_com_hello_goodreminder_MainActivity_LoadImage(JNIEnv *env, jobject thiz, jb
     AndroidData::SetImageToBeLoaded(nameStr,data,width,height);
 
 
+
+}
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_hello_goodreminder_MainActivity_LoadFont(JNIEnv *env, jobject thiz, jbyteArray name,
+                                                  jbyteArray bytes) {
+    std::string nameStr = "";
+
+    int nameLen = env->GetArrayLength(name);
+    jbyte* nameByte = env->GetByteArrayElements(name,nullptr);
+
+    if(!nameByte){
+        return;
+    }
+
+    for(int i = 0;i<nameLen;i++){
+        nameStr += nameByte[i];
+    }
+
+
+    std::vector<unsigned char> data;
+
+    int numBytes = env->GetArrayLength(bytes);
+
+    jbyte* byte = env->GetByteArrayElements(bytes,nullptr);
+
+    if(!byte){
+        return;
+    }
+
+    for(int i = 0;i<numBytes;i++){
+        data.push_back(byte[i]);
+    }
+
+    InitialWindow::LoadFont(nameStr,data);
 
 }

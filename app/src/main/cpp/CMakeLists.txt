@@ -188,6 +188,22 @@ project("app_project")
 	list(APPEND ${PROJECT_NAME}_DEPENDENCIES yaml_project)
 
 
+#repository download and settings for alias yael...
+
+
+	FetchContent_Declare(yael_project
+
+		GIT_REPOSITORY https://github.com/knz13/YAEL
+
+		GIT_TAG origin/main
+
+		SOURCE_DIR ${PROJECT_SOURCE_DIR}/vendor/yael
+
+	)
+
+	list(APPEND ${PROJECT_NAME}_DEPENDENCIES yael_project)
+
+
 	FetchContent_MakeAvailable(${${PROJECT_NAME}_DEPENDENCIES})
 
 	foreach(X IN LISTS ${PROJECT_NAME}_DEPENDENCIES)
@@ -277,8 +293,6 @@ target_link_libraries(goodreminder PUBLIC SDL2)
 
 target_link_libraries(goodreminder PUBLIC fmt::fmt)
 
-target_link_libraries(goodreminder PUBLIC ecspp)
-
 target_link_libraries(goodreminder PUBLIC asap)
 
 target_link_libraries(goodreminder PUBLIC yaml-cpp)
@@ -308,3 +322,5 @@ target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/date
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/stb/)
 
 target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/yaml/include)
+
+target_include_directories(goodreminder PUBLIC ${PROJECT_SOURCE_DIR}/vendor/yael/include)

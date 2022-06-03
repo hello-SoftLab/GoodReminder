@@ -6,15 +6,21 @@
 
 void CurrentDayStage::Init() {
     m_Data = "Click here to write!";
-
+    m_ArrowTex = AndroidData::GetLoadedTexture("images/seta.png");
+    AndroidData::onKeyboard().Connect(this,[](yael::event_receiver* rec,SDL_Event* event){
+        if(event->key.keysym.sym == SDLK_AC_BACK){
+            InitialWindow::SetProgramStage<CalendarStage>();
+        }
+    });
 }
 
 void CurrentDayStage::Update(float deltaTime) {
 
 
-    if(ImGui::ArrowButton("##ReturnArrowFromCurrentDay",ImGuiDir_Left)){
+    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(AndroidData::GetMonitorSize().x/10,AndroidData::GetMonitorSize().y/30))){
         InitialWindow::SetProgramStage<CalendarStage>();
     }
+
 
     std::string myStr = "Remind me of:";
 

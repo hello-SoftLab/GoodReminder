@@ -31,7 +31,7 @@ bool Shader::SetShaders(std::unordered_map<ShaderType,std::vector<std::string>> 
     }
     
     if(sources.size() == 0){
-        DEBUG_LOG("No sources were provided so shader.");
+        //DEBUG_LOG("No sources were provided so shader.");
         return false;
     }
 
@@ -104,7 +104,7 @@ bool Shader::CompileShader(unsigned int shaderID,std::string shaderTypeName) {
             errorStr += character;
         }
 
-        DEBUG_LOG("Shader compilation error: " << errorStr << " at shader of type " + shaderTypeName);
+        //DEBUG_LOG("Shader compilation error: " << errorStr << " at shader of type " + shaderTypeName);
 
         GL_CALL(glDeleteShader(shaderID));
 
@@ -150,7 +150,7 @@ bool Shader::LinkShader() {
             errorStr += character;
         }
 
-        DEBUG_LOG("Shader linking error: " << errorStr);
+        //DEBUG_LOG("Shader linking error: " << errorStr);
         
         
         

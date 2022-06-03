@@ -4,9 +4,9 @@
 class AppLayout {
 public:
     static void Init();
-    static ecspp::HelperClasses::FunctionSink<void()> onCleanup();
+    static yael::event_sink<void()> onCleanup();
 
 private:
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_CleanupEvent;
+    static inline yael::event_launcher<void()> m_CleanupEvent;
 
 };

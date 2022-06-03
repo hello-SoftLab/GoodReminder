@@ -11,16 +11,33 @@ void OlderDayStage::Init() {
         m_Data = vec;
     }
 
+    m_ArrowTex = AndroidData::GetLoadedTexture("images/seta.png");
+
 }
 
 void OlderDayStage::Update(float deltaTime) {
 
-    if(ImGui::ArrowButton("##ReturnArrow",ImGuiDir_Left)){
+    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(AndroidData::GetMonitorSize().x/10,AndroidData::GetMonitorSize().y/30))){
         InitialWindow::SetProgramStage<CalendarStage>();
     }
+
+    AndroidData::onKeyboard().Connect(this,[](yael::event_receiver* rec,SDL_Event* event){
+        if(event->key.keysym.sym == SDLK_AC_BACK){
+            InitialWindow::SetProgramStage<CalendarStage>();
+        }
+    });
+
     if(m_Data.empty()){
         std::string myStr =
-                "I'm sorry, no text was written this day...";
+                "I'm sorry,";
+
+        ImGui::SetCursorPosX(
+                AndroidData::GetMonitorSize().x / 2 - ImGui::CalcTextSize(myStr.c_str()).x / 2);
+
+        ImGui::Text("%s", myStr.c_str());
+
+        myStr =
+                "no text was written this day...";
 
         ImGui::SetCursorPosX(
                 AndroidData::GetMonitorSize().x / 2 - ImGui::CalcTextSize(myStr.c_str()).x / 2);

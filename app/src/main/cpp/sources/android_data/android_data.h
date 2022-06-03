@@ -1,6 +1,4 @@
 #pragma once
-
-
 #include "global.h"
 #include "SDL.h"
 #include "../opengl_wrappers/texture.h"
@@ -24,13 +22,14 @@ public:
     static void Initialization();
     static void Cleanup();
 
-    static ecspp::HelperClasses::FunctionSink<void()> onDestroy();
-    static ecspp::HelperClasses::FunctionSink<void()> onLowMemory();
-    static ecspp::HelperClasses::FunctionSink<void()> onPause();
-    static ecspp::HelperClasses::FunctionSink<void()> onResume();
-    static ecspp::HelperClasses::FunctionSink<void(int,int)> onResize();
-    static ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> onFingerEvent();
-    static ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> onMultiGesture();
+    static yael::event_sink<void(SDL_Event*)> onKeyboard();
+    static yael::event_sink<void()> onDestroy();
+    static yael::event_sink<void()> onLowMemory();
+    static yael::event_sink<void()> onPause();
+    static yael::event_sink<void()> onResume();
+    static yael::event_sink<void(int,int)> onResize();
+    static yael::event_sink<void(SDL_Event*)> onFingerEvent();
+    static yael::event_sink<void(SDL_MultiGestureEvent)> onMultiGesture();
 
     static ImVec2 GetDragDelta();
 
@@ -61,13 +60,14 @@ private:
     static void ShutDown();
 
     static inline bool m_IsRunning = true;
-    static inline ecspp::HelperClasses::EventLauncher<void(SDL_Event*)> m_FingerDownEvent;
-    static inline ecspp::HelperClasses::EventLauncher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
-    static inline ecspp::HelperClasses::EventLauncher<void(int,int)> m_ResizeEvent;
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_Terminating;
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_LowMemoryEvent;
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterBgEvent;
-    static inline ecspp::HelperClasses::EventLauncher<void()> m_DidEnterFgEvent;
+    static inline yael::event_launcher<void(SDL_Event*)> m_KeyboardEvent;
+    static inline yael::event_launcher<void(SDL_Event*)> m_FingerDownEvent;
+    static inline yael::event_launcher<void(SDL_MultiGestureEvent)> m_MultiGestureEvent;
+    static inline yael::event_launcher<void(int,int)> m_ResizeEvent;
+    static inline yael::event_launcher<void()> m_Terminating;
+    static inline yael::event_launcher<void()> m_LowMemoryEvent;
+    static inline yael::event_launcher<void()> m_DidEnterBgEvent;
+    static inline yael::event_launcher<void()> m_DidEnterFgEvent;
 
     static inline std::string m_DataDir;
     static inline std::vector<DelayedFunctionStructure> m_DelayedFunctions;

@@ -1,6 +1,6 @@
 #include "android_data.h"
 #include "../app_manager/app_manager.h"
-
+#include "../good_reminder/app_layout.h"
 
 void AndroidData::Init() {
 
@@ -99,6 +99,12 @@ bool AndroidData::InitializeImGui() {
         }
     });
 
+    static bool firstLoop = true;
+    if(firstLoop) {
+        AppLayout::Init();
+        firstLoop = false;
+    }
+
     return true;
 }
 
@@ -106,29 +112,29 @@ SDL_Window *AndroidData::CurrentWindow() {
     return m_WindowPointer;
 }
 
-ecspp::HelperClasses::FunctionSink<void()> AndroidData::onDestroy() {
+yael::event_sink<void()> AndroidData::onDestroy() {
     return {m_Terminating};
 }
 
-ecspp::HelperClasses::FunctionSink<void()> AndroidData::onLowMemory() {
+yael::event_sink<void()> AndroidData::onLowMemory() {
     return {m_LowMemoryEvent};
 }
 
-ecspp::HelperClasses::FunctionSink<void()> AndroidData::onPause() {
+yael::event_sink<void()> AndroidData::onPause() {
     return {m_DidEnterBgEvent};
 }
 
-ecspp::HelperClasses::FunctionSink<void()> AndroidData::onResume() {
+yael::event_sink<void()> AndroidData::onResume() {
     return {m_DidEnterFgEvent};
 }
 
-ecspp::HelperClasses::FunctionSink<void(int,int)> AndroidData::onResize() {
+yael::event_sink<void(int,int)> AndroidData::onResize() {
     return {m_ResizeEvent};
 }
-ecspp::HelperClasses::FunctionSink<void(SDL_Event*)> AndroidData::onFingerEvent() {
+yael::event_sink<void(SDL_Event*)> AndroidData::onFingerEvent() {
     return {m_FingerDownEvent};
 }
-ecspp::HelperClasses::FunctionSink<void(SDL_MultiGestureEvent)> AndroidData::onMultiGesture() {
+yael::event_sink<void(SDL_MultiGestureEvent)> AndroidData::onMultiGesture() {
     return {m_MultiGestureEvent};
 }
 
@@ -301,6 +307,13 @@ void AndroidData::Initialization() {
                 case SDL_FINGERMOTION:
                     m_FingerDownEvent.EmitEvent(&event);
                     break;
+                case SDL_KEYDOWN:
+                    m_KeyboardEvent.EmitEvent(&event);
+                    break;
+                case SDL_KEYUP:
+                    m_KeyboardEvent.EmitEvent(&event);
+                    break;
+
 
             }
         }
@@ -322,10 +335,7 @@ void AndroidData::Initialization() {
             it++;
         }
 
-        SDL_GetDesktopDisplayMode(0,&m_DisplayProperties);
-
-        m_Dimensions.w = m_DisplayProperties.w;
-        m_Dimensions.h = m_DisplayProperties.h;
+        SDL_GetDisplayUsableBounds(0,&m_Dimensions);
 
 
     }
@@ -344,6 +354,10 @@ void AndroidData::Cleanup() {
 
     // Clean up
     SDL_Quit();
+}
+
+yael::event_sink<void(SDL_Event *)> AndroidData::onKeyboard() {
+    return {m_KeyboardEvent};
 }
 
 

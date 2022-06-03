@@ -30,7 +30,7 @@ VertexBuffer::VertexBuffer(VertexArray& master) : m_Master(master) {
 
 void VertexBuffer::Generate() {
     if(m_AttributeSize == -1){
-        DEBUG_LOG("Calling 'VertexBuffer::Generate' without the proper creation order, check if calling 'VertexArray::SetVertexBuffer' or 'VertexBuffer::CreateNew'...");
+        //DEBUG_LOG("Calling 'VertexBuffer::Generate' without the proper creation order, check if calling 'VertexArray::SetVertexBuffer' or 'VertexBuffer::CreateNew'...");
         return;
     }
     numberOfElements = m_AttributeSize;

@@ -26,13 +26,17 @@ void CalendarStage::Update(float deltaTime) {
 
 
     ImGui::SetCursorPosX(InitialWindow::GetMiddleWidgetCursorOffsetX());
-    ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/6);
+    ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/15);
 
-    ImGui::SetWindowFontScale(3);
+    if(!hasInit){
+        ImGui::SetWindowFontScale(static_cast<int>(3.0f/100.0f * AndroidData::GetMonitorSize().y/ImGui::GetDefaultFont()->FontSize));
+        hasInit = true;
+    }
 
-    ImGui::PushStyleColor(ImGuiCol_ChildBg,Color::White.AsImVec4());
-    ImGui::BeginChild("CalendarChild",ImVec2(InitialWindow::GetMiddleWidgetSizeX(),4*AndroidData::GetMonitorSize().y/6),true,ImGuiWindowFlags_NoScrollbar);
-    ImGui::PopStyleColor();
+    ImGui::PushStyleColor(ImGuiCol_ChildBg,InitialWindow::GetBgColor().AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_Border,Color::White.AsImVec4());
+    ImGui::BeginChild("CalendarChild",ImVec2(InitialWindow::GetMiddleWidgetSizeX(),12*AndroidData::GetMonitorSize().y/15),true,ImGuiWindowFlags_NoScrollbar);
+    ImGui::PopStyleColor(2);
 
     auto endDate = asap::datetime(m_LowerBound,0,1) + 1_year - 1_day;
 
@@ -142,7 +146,6 @@ void CalendarStage::SetupInnerSquare(int year,int month,int day) {
     ImVec2 cursorPos = ImGui::GetCursorPos();
 
     ImVec2 size = ImVec2(ImGui::CalcTextSize("AA").x*1.5,ImGui::CalcTextSize("AA").y*1.5);
-
     if(day == asap::now().mday() && month == asap::now().month() && year == asap::now().year()){
         ImGui::PushStyleColor(ImGuiCol_Button,Color::Green.AsImVec4());
         if(ImGui::Button(("##buttonForSelectionMonth" + std::to_string(month) + "Day" + std::to_string(day)).c_str(),size)){
@@ -163,6 +166,7 @@ void CalendarStage::SetupInnerSquare(int year,int month,int day) {
 
     ImGui::SetCursorPosX(cursorPos.x + size.x/2 - ImGui::CalcTextSize(std::to_string(day).c_str()).x/2);
     ImGui::SetCursorPosY(cursorPos.y + size.y/2 - ImGui::CalcTextSize(std::to_string(day).c_str()).y/2);
+
     ImGui::Text("%s",std::to_string(day).c_str());
 
 }

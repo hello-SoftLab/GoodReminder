@@ -5,22 +5,19 @@
 
 void LoadingStage::Init() {
 
-    m_Texture = AndroidData::GetLoadedTexture( "logo/logo-ALLLETTERCASEOFF.png");
+    m_Texture = AndroidData::GetLoadedTexture( "images/logo-LOADINGPAGEOFF.png");
 
 }
 
 void LoadingStage::Update(float deltaTime) {
-
-
-
     if(m_Texture){
         if(animationTime < 1.5){
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha,animationTime/1.5f);
         }
 
-        ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/2 - m_Texture.GetWidth()/10);
-        ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/2 - m_Texture.GetHeight()/10);
-        ImGui::Image((void*)m_Texture.GetID(),ImVec2(m_Texture.GetWidth()/5,m_Texture.GetHeight()/5));
+        ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/2 - AndroidData::GetMonitorSize().x/4);
+        ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/2 - AndroidData::GetMonitorSize().y/10);
+        ImGui::Image((void*)m_Texture.GetID(),ImVec2(AndroidData::GetMonitorSize().x/2                                                                                                                                                                                                                        ,AndroidData::GetMonitorSize().y/5));
         if(animationTime < 1.5) {
             ImGui::PopStyleVar();
         }
