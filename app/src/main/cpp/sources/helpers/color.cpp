@@ -75,3 +75,8 @@ Color Color::operator- (const Color& other) {
 
     return newColor;
 }
+
+Color Color::AsNormals(float r, float g, float b, float a) {
+    return Color(r*255,g*255,b*255,a*255);
+}
+

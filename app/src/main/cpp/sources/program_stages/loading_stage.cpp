@@ -15,9 +15,9 @@ void LoadingStage::Update(float deltaTime) {
             ImGui::PushStyleVar(ImGuiStyleVar_Alpha,animationTime/1.5f);
         }
 
-        ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/2 - AndroidData::GetMonitorSize().x/4);
-        ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/2 - AndroidData::GetMonitorSize().y/10);
-        ImGui::Image((void*)m_Texture.GetID(),ImVec2(AndroidData::GetMonitorSize().x/2                                                                                                                                                                                                                        ,AndroidData::GetMonitorSize().y/5));
+        ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x/2 - ImGui::GetFontSize()*5);
+        ImGui::SetCursorPosY(AndroidData::GetMonitorSize().y/2 - ImGui::GetFontSize()*4);
+        ImGui::Image((void*)m_Texture.GetID(),ImVec2(ImGui::GetFontSize()*10,ImGui::GetFontSize()*8));
         if(animationTime < 1.5) {
             ImGui::PopStyleVar();
         }

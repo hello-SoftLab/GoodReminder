@@ -6,9 +6,13 @@
 #include <fstream>
 
 void InitialWindow::Update() {
-
+    static bool initialized = false;
     if(m_Properties.m_CurrentStage){
         m_Properties.m_CurrentStage.Get()->Update(AppManager::DeltaTime());
+    }
+    if(!initialized){
+        ImGui::SetWindowFontScale(static_cast<int>(3.0f/100.0f * AndroidData::GetMonitorSize().y/ImGui::GetDefaultFont()->FontSize));
+        initialized = true;
     }
 
 

@@ -48,9 +48,12 @@ void AppManager::Draw() {
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize,4);
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered,Color::AsNormals(0.26f, 0.59f, 0.98f, 0.40f).AsImVec4());
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive,Color::AsNormals(0.26f, 0.59f, 0.98f, 0.40f).AsImVec4());
 
         m_DrawingFunctions.EmitEvent();
 
+        ImGui::PopStyleColor(2);
         ImGui::PopStyleVar(4);
 
 
