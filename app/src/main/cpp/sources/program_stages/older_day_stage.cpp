@@ -17,7 +17,7 @@ void OlderDayStage::Init() {
             InitialWindow::SetProgramStage<CalendarStage>();
         }
     });
-    
+
 
 }
 
@@ -26,7 +26,7 @@ void OlderDayStage::Update(float deltaTime) {
     ImGui::PushStyleColor(ImGuiCol_Button,Color(0,0,0,0).AsImVec4());
     ImGui::PushStyleColor(ImGuiCol_ButtonActive,Color(0,0,0,0).AsImVec4());
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered,Color(0,0,0,0).AsImVec4());
-    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(AndroidData::GetMonitorSize().x/10,AndroidData::GetMonitorSize().y/30))){
+    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(1.5f*ImGui::GetFrameHeight(),1.5f*ImGui::GetFrameHeight()))){
         InitialWindow::SetProgramStage<CalendarStage>();
     }
     ImGui::PopStyleColor(3);
