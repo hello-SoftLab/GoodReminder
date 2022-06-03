@@ -12,7 +12,7 @@ void CalendarStage::Init() {
     m_LowerBound = asap::now().year();
     m_UpperBound = m_LowerBound + 1;
 
-
+    m_ArrowTex = AndroidData::GetLoadedTexture("images/seta.png");
 
 
 
@@ -86,10 +86,16 @@ void CalendarStage::Update(float deltaTime) {
     float xPos = AndroidData::GetMonitorSize().x/2 - ImGui::CalcTextSize(std::to_string(m_LowerBound).c_str()).x/2;
 
 
-    ImGui::SetCursorPosX(xPos - ImGui::CalcTextSize(std::to_string(m_LowerBound).c_str()).x/2 - ImGui::GetFontSize());
-    if(ImGui::ArrowButton("##ArrowButtonForLastYear",ImGuiDir_Left)){
+    ImGui::SetCursorPosX(xPos - ImGui::GetFrameHeight()/2 - ImGui::GetFrameHeight());
+    ImGui::PushStyleColor(ImGuiCol_Button,Color(0,0,0,0).AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,Color(0,0,0,0).AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,Color(0,0,0,0).AsImVec4());
+    ImGui::PushID(ImGui::GetID("LastYearButton"));
+    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(ImGui::GetFrameHeight(),ImGui::GetFrameHeight()))){
         m_LowerBound--;
     }
+    ImGui::PopID();
+    ImGui::PopStyleColor(3);
 
     ImGui::SameLine();
 
@@ -101,10 +107,14 @@ void CalendarStage::Update(float deltaTime) {
 
         ImGui::SameLine();
 
-        ImGui::SetCursorPosX(xPos + ImGui::CalcTextSize(std::to_string(m_LowerBound).c_str()).x/2 + ImGui::GetFrameHeight() + ImGui::GetFontSize());
-        if(ImGui::ArrowButton("##ArrowButtonForNextYear",ImGuiDir_Right)){
+        ImGui::SetCursorPosX(xPos + ImGui::GetFrameHeight() + ImGui::GetFrameHeight());
+        ImGui::PushStyleColor(ImGuiCol_Button,Color(0,0,0,0).AsImVec4());
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive,Color(0,0,0,0).AsImVec4());
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered,Color(0,0,0,0).AsImVec4());
+        if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(ImGui::GetFrameHeight(),ImGui::GetFrameHeight()),ImVec2(1,0),ImVec2(0,1))){
             m_LowerBound++;
         }
+        ImGui::PopStyleColor(3);
 
 
     }
@@ -147,7 +157,7 @@ void CalendarStage::SetupInnerSquare(int year,int month,int day) {
 
     ImVec2 size = ImVec2(ImGui::CalcTextSize("AA").x*1.5,ImGui::CalcTextSize("AA").y*1.5);
     if(day == asap::now().mday() && month == asap::now().month() && year == asap::now().year()){
-        ImGui::PushStyleColor(ImGuiCol_Button,Color::Green.AsImVec4());
+        ImGui::PushStyleColor(ImGuiCol_Button,Color(240,142,101).AsImVec4());
         if(ImGui::Button(("##buttonForSelectionMonth" + std::to_string(month) + "Day" + std::to_string(day)).c_str(),size)){
             InitialWindow::SetProgramStage<CurrentDayStage>().onInit().Connect([=](){
                 InitialWindow::GetCurrentProgramStage().GetAs<CurrentDayStage>()->SetDate(year,month,day);
@@ -166,8 +176,9 @@ void CalendarStage::SetupInnerSquare(int year,int month,int day) {
 
     ImGui::SetCursorPosX(cursorPos.x + size.x/2 - ImGui::CalcTextSize(std::to_string(day).c_str()).x/2);
     ImGui::SetCursorPosY(cursorPos.y + size.y/2 - ImGui::CalcTextSize(std::to_string(day).c_str()).y/2);
-
+    ImGui::PushStyleColor(ImGuiCol_Text,Color::White.AsImVec4());
     ImGui::Text("%s",std::to_string(day).c_str());
+    ImGui::PopStyleColor();
 
 }
 

@@ -16,10 +16,13 @@ void CurrentDayStage::Init() {
 
 void CurrentDayStage::Update(float deltaTime) {
 
-
+    ImGui::PushStyleColor(ImGuiCol_Button,Color(0,0,0,0).AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,Color(0,0,0,0).AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,Color(0,0,0,0).AsImVec4());
     if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(AndroidData::GetMonitorSize().x/10,AndroidData::GetMonitorSize().y/30))){
         InitialWindow::SetProgramStage<CalendarStage>();
     }
+    ImGui::PopStyleColor(3);
 
 
     std::string myStr = "Remind me of:";

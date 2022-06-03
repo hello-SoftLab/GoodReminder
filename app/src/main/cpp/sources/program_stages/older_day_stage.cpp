@@ -12,20 +12,25 @@ void OlderDayStage::Init() {
     }
 
     m_ArrowTex = AndroidData::GetLoadedTexture("images/seta.png");
-
-}
-
-void OlderDayStage::Update(float deltaTime) {
-
-    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(AndroidData::GetMonitorSize().x/10,AndroidData::GetMonitorSize().y/30))){
-        InitialWindow::SetProgramStage<CalendarStage>();
-    }
-
     AndroidData::onKeyboard().Connect(this,[](yael::event_receiver* rec,SDL_Event* event){
         if(event->key.keysym.sym == SDLK_AC_BACK){
             InitialWindow::SetProgramStage<CalendarStage>();
         }
     });
+    
+
+}
+
+void OlderDayStage::Update(float deltaTime) {
+
+    ImGui::PushStyleColor(ImGuiCol_Button,Color(0,0,0,0).AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive,Color(0,0,0,0).AsImVec4());
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered,Color(0,0,0,0).AsImVec4());
+    if(ImGui::ImageButton((ImTextureID)m_ArrowTex.GetID(),ImVec2(AndroidData::GetMonitorSize().x/10,AndroidData::GetMonitorSize().y/30))){
+        InitialWindow::SetProgramStage<CalendarStage>();
+    }
+    ImGui::PopStyleColor(3);
+
 
     if(m_Data.empty()){
         std::string myStr =

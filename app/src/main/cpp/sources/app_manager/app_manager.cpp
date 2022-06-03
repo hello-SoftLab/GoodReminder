@@ -47,7 +47,7 @@ void AppManager::Draw() {
         ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding,10);
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding,10);
-        ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize,2);
+        ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize,4);
 
         m_DrawingFunctions.EmitEvent();
 

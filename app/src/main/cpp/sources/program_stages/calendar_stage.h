@@ -13,7 +13,7 @@ private:
     std::string GetMonthName(int month);
     void SetupInnerSquare(int year,int month,int day);
 
-
+    Texture<Type2D> m_ArrowTex;
     int m_CurrentYear;
     int m_LowerBound,m_UpperBound;
     bool hasInit = false;
