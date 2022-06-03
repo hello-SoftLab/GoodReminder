@@ -63,10 +63,8 @@ void OlderDayStage::Update(float deltaTime) {
 
         for (auto &text: m_Data) {
             ImGui::SetCursorPosX(AndroidData::GetMonitorSize().x / 7);
-            ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize,2);
             ImGui::PushStyleColor(ImGuiCol_Border,Color::White.AsImVec4());
-            ImGui::BeginChild(("##olderDayChild" + ecspp::HelperFunctions::GenerateStringHash(&text)).c_str(),ImVec2(InitialWindow::GetMiddleWidgetSizeX(),(CalculateNumberOfLines(text) + 1.5f)* ImGui::CalcTextSize("A").y),true,ImGuiWindowFlags_AlwaysAutoResize);
-            ImGui::PopStyleVar();
+            ImGui::BeginChild(("##olderDayChild" + ecspp::HelperFunctions::GenerateStringHash(&text)).c_str(),ImVec2(InitialWindow::GetMiddleWidgetSizeX(),(CalculateNumberOfLines(text) + 1.8f)* ImGui::GetFontSize()),true,ImGuiWindowFlags_AlwaysAutoResize | ImGuiWindowFlags_NoScrollbar);
             ImGui::PopStyleColor();
 
 
