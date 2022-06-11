@@ -12,7 +12,7 @@ void CalendarStage::Init() {
     m_LowerBound = asap::now().year();
     m_UpperBound = m_LowerBound + 1;
 
-    m_ArrowTex = AndroidData::GetLoadedTexture("images/seta.png");
+    m_ArrowTex = LoadTextureFromFile<Type2D>(AndroidData::GetDataDir() + "/assets/images/seta.png");
 
 
 

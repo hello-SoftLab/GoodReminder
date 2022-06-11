@@ -10,7 +10,7 @@
 #include "fmt/format.h"
 #include "../vendor/datetime/include/asap/datetime.h"
 #include "../vendor/yaml/include/yaml-cpp/yaml.h"
-#include "../vendor/yael/yael.h"
+#include "../vendor/yael/include/yael.h"
 #include <jni.h>
 #include <iostream>
 #include "jni.h"

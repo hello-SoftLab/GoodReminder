@@ -155,7 +155,7 @@ int AndroidData::EventFilter(void *userData, SDL_Event *event) {
             break;
         case SDL_WINDOWEVENT:
             if(event->window.event == SDL_WINDOWEVENT_SIZE_CHANGED){
-                m_ResizeEvent.EmitEvent(event->window.data1,event->window.data2);
+                m_ResizeEvent.EmitEvent((int)event->window.data1,(int)event->window.data2);
             }
             break;
     }
@@ -296,7 +296,7 @@ void AndroidData::Initialization() {
                     }
                     break;
                 case SDL_MULTIGESTURE:
-                    m_MultiGestureEvent.EmitEvent(event.mgesture);
+                    m_MultiGestureEvent.EmitEvent(SDL_MultiGestureEvent(event.mgesture));
                     break;
                 case SDL_FINGERDOWN:
                     m_FingerDownEvent.EmitEvent(&event);

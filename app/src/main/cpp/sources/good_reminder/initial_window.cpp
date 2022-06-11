@@ -17,8 +17,11 @@ void InitialWindow::Update() {
 
 
 
+    ImGui::PushFont(m_LoadedFonts["LibreCaslonText-Regular.ttf"]);
     m_NextProgramStage.m_UpdatePropertiesFunc();
     m_NextProgramStage.m_UpdatePropertiesFunc = [](){};
+    ImGui::PopFont();
+
 
 }
 
@@ -49,25 +52,12 @@ void InitialWindow::Init() {
 
     AndroidData::onPause().Connect(&SaveToFile);
 
-    /*
-    auto it = m_UnloadedFonts.begin();
-    while(it != m_UnloadedFonts.end()){
-        auto& [name,data] = *it;
-        ImFontConfig cfg;
-        cfg.FontDataOwnedByAtlas = false;
-        ImFont* font = ImGui::GetIO().Fonts->AddFontFromMemoryTTF(data.data(),data.size(),20.0f,&cfg);
-        
-        if(!font->IsLoaded()){
-            continue;
-        }
-        m_LoadedFonts[name] = font;
-        m_UnloadedFonts.erase(it);
-        it = m_UnloadedFonts.begin();
-    }
-    */
 
+    ImFont* font = ImGui::GetIO().Fonts->AddFontFromFileTTF((AndroidData::GetDataDir() + "/assets/fonts/LibreCaslonText-Regular.ttf").c_str(),30.0f);
 
-    //ImGui::PushFont(m_LoadedFonts["LibreCaslonText-Regular"]);
+    ImGui::GetIO().Fonts->Build();
+
+    m_LoadedFonts["LibreCaslonText-Regular.ttf"] = font;
 
 
 }

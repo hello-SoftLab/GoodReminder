@@ -5,7 +5,7 @@
 
 void LoadingStage::Init() {
 
-    m_Texture = AndroidData::GetLoadedTexture( "images/logo-LOADINGPAGEOFF.png");
+    m_Texture = LoadTextureFromFile<Type2D>(AndroidData::GetDataDir() + "/assets/images/logo-LOADINGPAGEOFF.png");
 
 }
 

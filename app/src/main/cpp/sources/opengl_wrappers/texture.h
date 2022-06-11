@@ -105,7 +105,7 @@ static Texture<TextureType> LoadTextureFromFile(std::string path) {
 
     GLenum format = nrChannels == 3 ? GL_RGB : GL_RGBA;
 
-    Texture<TextureType> tex([=](Texture<TextureType>& texture){
+    Texture<TextureType> tex(width,height,[=](Texture<TextureType>& texture){
 
         texture.Bind();
         GL_CALL(glTexParameteri(texture.GetType(), GL_TEXTURE_WRAP_S, GL_REPEAT));
@@ -115,7 +115,7 @@ static Texture<TextureType> LoadTextureFromFile(std::string path) {
 
         GL_CALL(glPixelStorei(GL_UNPACK_ALIGNMENT, 1));
         if (ecspp::HelperFunctions::HashClassName<TextureType>() == ecspp::HelperFunctions::HashClassName<Type2D>()) {
-            GL_CALL(glTexImage2D(texture.GetType(), 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data));
+            GL_CALL(glTexImage2D(texture.GetType(), 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data));
         }
         GL_CALL(glGenerateMipmap(texture.GetType()));
 

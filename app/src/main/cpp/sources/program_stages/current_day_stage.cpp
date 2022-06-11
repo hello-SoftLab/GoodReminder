@@ -6,7 +6,7 @@
 
 void CurrentDayStage::Init() {
     m_Data = "Click here to write!";
-    m_ArrowTex = AndroidData::GetLoadedTexture("images/seta.png");
+    m_ArrowTex = LoadTextureFromFile<Type2D>(AndroidData::GetDataDir() + "/assets/images/seta.png");
     AndroidData::onKeyboard().Connect(this,[](yael::event_receiver* rec,SDL_Event* event){
         if(event->key.keysym.sym == SDLK_AC_BACK){
             InitialWindow::SetProgramStage<CalendarStage>();

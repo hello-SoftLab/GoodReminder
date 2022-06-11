@@ -11,8 +11,14 @@ android {
     ndkVersion "23.1.7779620"
     compileSdk 32
 
+    aaptOptions {
+        noCompress 'png'
+        noCompress 'ttf'
+
+    }
+
     defaultConfig {
-        applicationId "knz.goodreminder"
+        applicationId "com.hello.goodreminder"
         minSdk 24
         targetSdk 32
         versionCode 1
